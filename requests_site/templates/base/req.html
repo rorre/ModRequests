@@ -1,0 +1,79 @@
+{% import 'macros.html' as macros %}
+{% extends "layout.html" %}
+
+{% block content %}
+<h2 class="ui header">
+    Request Mod
+</h2>
+<div class="ui divider"></div>
+<div class="ui yellow message">
+    <div class="header">
+        Things to keep in mind:
+    </div>
+    <ul class="list">
+        <li>Even though you can request as many maps as you like, I still have the rights to reject em.</li>
+        <li>If I have picked one of your map, then the chance is that I will not look at the map you send again in a short matter of time.</li>
+        <li>No duplicates. The chances are I might reject again.</li>
+        <li>You only need to link your map, rest of the form will be filled automatically.</li>
+        <li>If the rest of the form hasnt filled, then please do not submit.</li>
+    </ul>
+</div>
+
+<div class="ui hidden negative message" id="err"></div>
+
+<form class="ui form" method="POST">
+    {{ form.csrf_token }}
+    {{ macros.render_field(form.link) }}
+    {{ macros.render_field(form.song, disabled=True) }}
+    {{ macros.render_field(form.mapset_id, disabled=True) }}
+    {{ macros.render_field(form.mapper, disabled=True) }}
+    {{ form.submit(class_="ui button") }}
+</form>
+{% endblock %}
+
+{% block js %}
+var timer;
+var timeout = 1000;
+const mapsetRegexp = /http[s]?:\/\/osu\.ppy\.sh\/([b]?(?:eatmapset)?[s]?)\/([0-9]+)(?:#[a-z]+\/([0-9]+))?/
+
+$('#link').keyup(function(){
+    clearTimeout(timer);
+    if ($('#link').val()) {
+        timer = setTimeout(doneTyping, timeout);
+    }
+});
+
+$("#link").keydown(function(){
+    clearTimeout(timer);
+    $(".form").removeClass("loading")
+    $("#song").val('')
+    $("#mapset_id").val('')
+    $("#mapper").val('')
+    $("#err").addClass("hidden")
+    $("#err").empty()
+})
+
+function doneTyping () {
+    $(".form").addClass("loading")
+    $("#err").addClass("hidden")
+    $("#err").empty()
+
+    const value = $('#link').val()
+    var match = value.match(mapsetRegexp)
+    
+    if (!match) {
+        $(".form").removeClass("loading")
+        $("#err").removeClass("hidden")
+        $("#err").html("Cant find matching osu! beatmap URL.")
+    } else {
+        var mode
+        if (match[1] == "b") { mode = "b" }
+        else { mode = "s" }
+        axios.get(`/${mode}/${match[2]}`).then(function (response) {
+            $("#song").val(response.data.song)
+            $("#mapset_id").val(response.data.mapset_id)
+            $("#mapper").val(response.data.mapper)
+        }).catch(handle_error).finally(()=>{$(".form").removeClass("loading")})
+    }
+}
+{% endblock %}

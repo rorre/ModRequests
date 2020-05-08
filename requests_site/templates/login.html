@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <title>Ren's Requests</title>
+        <script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script>
+        <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/fomantic-ui@2.8.4/dist/semantic.min.css">
+        <script src="https://cdn.jsdelivr.net/npm/fomantic-ui@2.8.4/dist/semantic.min.js"></script>
+        <style type="text/css">
+            body {
+              background-color: #DADADA;
+            }
+            body > .grid {
+              height: 100%;
+            }
+            .image {
+              margin-top: -100px;
+            }
+            .column {
+              max-width: 450px;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="ui middle aligned center aligned grid">
+            <div class="column">
+                <div class="ui placeholder segment">
+                    <div class="ui icon header">
+                        <i class="sign in alternate icon"></i>
+                        You need to be logged in to proceed.
+                    </div>
+                    <a href="{{ url_for('user.login') }}" class="ui primary button">
+                        Log-in with osu!
+                    </a>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>
