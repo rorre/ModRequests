@@ -76,7 +76,6 @@ def delete(set_id):
 
 
 @blueprint.route("/search/<query>")
-@admin_only
 def search(query):
     json = {"results": []}
     requests = Request.query.filter(Request.song.like(f"%{query}%")).all()
