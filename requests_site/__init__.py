@@ -6,14 +6,22 @@ from flask import Flask, flash, redirect, url_for
 from flask_admin.contrib.sqla import ModelView
 from flask_login import current_user
 
+import sentry_sdk
+from sentry_sdk.integrations.flask import FlaskIntegration
+
 
 def create_app(config_file="config.json"):
+    with open(config_file, "r") as f:
+        data = json.load(f)
+
+    sentry_sdk.init(
+        dsn=data["SENTRY_URL"],
+        integrations=[FlaskIntegration()]
+    )
+
     app = Flask(__name__)
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
     app.config["TEMPLATES_AUTO_RELOAD"] = True
-
-    with open(config_file, "r") as f:
-        data = json.load(f)
     app.config.from_mapping(data)
 
     from requests_site.plugins import admin, db, login_manager, oauth, migrate
