@@ -24,3 +24,7 @@ $(".cancelbtn").click(function (e) {
         ]
     })
 })
+
+$(".reason").popup({
+    on: 'hover'
+});
