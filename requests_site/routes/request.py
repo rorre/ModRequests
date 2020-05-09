@@ -45,7 +45,7 @@ def create():
         db.session.commit()
         flash("Done adding request.")
         return redirect(url_for("base.index"))
-    return render_template("base/req.html", form=form)
+    return render_template("base/req.html", form=form, scripts=["request.js"])
 
 
 @blueprint.route("/<int:set_id>", methods=["POST"])
@@ -94,7 +94,12 @@ def listing():
         .order_by(Request.requested_at.desc())
         .all()
     )
-    return render_template("base/index.html", reqs=reqs, title="Requests list")
+    return render_template(
+        "base/index.html",
+        reqs=reqs,
+        title="Requests list",
+        scripts=["admin.js", "index.js"],
+    )
 
 
 @blueprint.route("/list/mine")
@@ -110,6 +115,7 @@ def mine():
         reqs=reqs,
         title="My requests",
         subtitle="Where all of your (past) requests resides.",
+        scripts=["admin.js", "index.js"],
     )
 
 
@@ -125,6 +131,7 @@ def archive():
         reqs=reqs,
         title="Archived requests",
         subtitle="All of the requests that is already done.",
+        scripts=["admin.js", "index.js"],
     )
 
 
@@ -140,4 +147,5 @@ def accepted():
         reqs=reqs,
         title="Accepted requests",
         subtitle="Those who gets accepted. Once they're done, they will end up in Archive.",
+        scripts=["admin.js", "index.js"],
     )

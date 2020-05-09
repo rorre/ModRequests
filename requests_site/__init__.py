@@ -19,7 +19,11 @@ def create_app(config_file="config.json"):
         integrations=[FlaskIntegration()]
     )
 
-    app = Flask(__name__)
+    app = Flask(
+        __name__,
+        static_url_path='',
+        static_folder='public'
+    )
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
     app.config["TEMPLATES_AUTO_RELOAD"] = True
     app.config.from_mapping(data)
