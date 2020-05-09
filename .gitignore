@@ -140,3 +140,4 @@ cython_debug/
 config.json
 *.db
 .vscode/
+bundle.js

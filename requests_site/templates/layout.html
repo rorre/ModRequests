@@ -60,11 +60,8 @@
 
             {% block content %}{% endblock %}
         </div>
-        <script src="/global.js"></script>
-        {% if scripts %}
-        {% for js in scripts %}
-            <script src="/{{ js }}"></script>
-        {% endfor %}
-        {% endif %}
+        {% assets "js_all" %}
+            <script src="{{ ASSET_URL }}"></script>
+        {% endassets %}
     </body>
 </html>

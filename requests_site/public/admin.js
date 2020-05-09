@@ -15,7 +15,7 @@ $(".declinereq").click(function (e) {
     $this = $(this)
     const set_id = $this.data("set-id")
 
-    const appended = `<div class="ui form"><div class="field"><label>Reason</label><textarea id="reason-${set_id}"></textarea></div><button class="ui button" type="submit" id="rejbtn-${set_id}">Submit</button></div>`
+    const appended = `<div class="ui form"><div class="field"><label>Reason</label><textarea id="reason-${set_id}"></textarea></div><button class="ui button" type="submit" id="rejbtn-${set_id}">Submit</button></div>`;
     $($this.parents()[1]).append(appended)
     $("#rejbtn-" + set_id).click((e) => {
         e.preventDefault()
