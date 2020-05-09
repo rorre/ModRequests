@@ -116,7 +116,7 @@ def mine():
 @blueprint.route("/list/archive")
 def archive():
     reqs = (
-        Request.query.filter(Request.archive)
+        Request.query.filter(Request.status_ == 3)
         .order_by(Request.requested_at.desc())
         .all()
     )
@@ -124,7 +124,7 @@ def archive():
         "base/index.html",
         reqs=reqs,
         title="Archived requests",
-        subtitle="All of the requests that is rejected, or already done.",
+        subtitle="All of the requests that is already done.",
     )
 
 
