@@ -28,7 +28,7 @@ def create_app(config_file="config.json"):
     app.config["TEMPLATES_AUTO_RELOAD"] = True
     app.config.from_mapping(data)
 
-    from requests_site.plugins import admin, db, login_manager, oauth, migrate, bundler
+    from requests_site.plugins import admin, db, login_manager, oauth, migrate, bundler, nl2br
     from requests_site.models import User, Request
 
     admin.init_app(app)
@@ -37,6 +37,7 @@ def create_app(config_file="config.json"):
     login_manager.init_app(app)
     migrate.init_app(app, db)
     bundler.init_app(app)
+    app.jinja_env.filters['nlbr'] = nl2br
 
     admin.add_view(AdminView(User, db.session, endpoint="/user"))
     admin.add_view(AdminView(Request, db.session, endpoint="/req"))
