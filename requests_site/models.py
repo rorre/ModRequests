@@ -69,7 +69,7 @@ class Request(db.Model):
     link = db.Column(db.Unicode, nullable=True)
     mapset_id = db.Column(db.Integer, nullable=True)
     mapper = db.Column(db.Unicode, nullable=False)
-    reason = db.Column(db.Unicode)
+    reason = db.Column(db.Text)
     archive = db.Column(db.Boolean, default=False)
 
     @property
