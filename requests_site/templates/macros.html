@@ -18,7 +18,7 @@
                 {{ db.status.name }}
             </a>
             {% if db.reason %}
-            | <span data-tooltip="{{ db.reason }}">Why?</span>
+            | <span data-html="<p>{{ db.reason.replace("\r\n", "</p><p>") | safe }}</p>">Why?</span>
             {% endif %}
             {% if user.is_admin and db.status.value == 0 %}
             <div>
