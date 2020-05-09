@@ -1,0 +1,41 @@
+from datetime import datetime
+
+import discord
+from discord import Webhook, RequestsWebhookAdapter
+from flask import current_app
+
+from requests_site.decorator import run_async
+
+colors = {
+    0: discord.Colour(0xE29519),
+    1: discord.Colour(0xA82033),
+    2: discord.Colour(0x4A90E2),
+    3: discord.Colour(0x4A90E2),
+}
+
+
+@run_async
+def send_hook_async(url, event_type, embed):
+    webhook = Webhook.from_url(url, adapter=RequestsWebhookAdapter())
+    webhook.send(f"New event: {event_type}", embed=embed)
+
+
+def send_hook(event_type, beatmap):
+    app = current_app._get_current_object()
+    hook_url = app.config["DISCORD_WEBHOOK"]
+
+    desc = (
+        f"URL: {beatmap.link}\r\n"
+        + f"Mapper: {beatmap.mapper}\r\n"
+        + f"Requester: {beatmap.requester.username}\r\n"
+        + f"Status: {beatmap.status.name}"
+    )
+
+    embed = discord.Embed(
+        title=f"{beatmap.song}",
+        colour=colors.get(beatmap.status_),
+        description=desc,
+        timestamp=datetime.utcnow(),
+    )
+
+    send_hook_async(hook_url, event_type, embed)

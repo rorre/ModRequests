@@ -16,6 +16,7 @@ from wtforms.validators import Required
 
 from requests_site.decorator import admin_only
 from requests_site.models import Request, Status, db
+from requests_site.webhook import send_hook
 
 blueprint = Blueprint("request", __name__, url_prefix="/request")
 
@@ -43,6 +44,7 @@ def create():
         current_user.requests.append(request)
         db.session.add(request)
         db.session.commit()
+        send_hook("add_request", request)
         flash("Done adding request.")
         return redirect(url_for("base.index"))
     return render_template("base/req.html", form=form, scripts=["request.js"])
@@ -58,6 +60,7 @@ def update(set_id):
             setattr(mapset, key, data[key])
         db.session.add(mapset)
         db.session.commit()
+        send_hook("update_request", mapset)
         return jsonify(msg="OK")
     except Exception:
         return jsonify(err="An error occured.")
@@ -71,6 +74,7 @@ def delete(set_id):
         return abort(403)
     db.session.delete(mapset)
     db.session.commit()
+    send_hook("delete_request", mapset)
     flash("Deleted.")
     return redirect(url_for("base.index"))
 
