@@ -6,7 +6,8 @@
             <div class="content">
                 <a href="https://osu.ppy.sh/s/{{ db.mapset_id }}" class="header">{{ db.song }}</a>
             <div class="meta">
-                <time class="timeago" datetime="{{ db.requested_at.isoformat(timespec='seconds') }}Z"></time>
+                <time class="timeago" datetime="{{ db.requested_at.isoformat(timespec='seconds') }}Z"></time>(Last updated 
+                <time class="timeago" datetime="{{ db.last_updated.isoformat(timespec='seconds') }}Z"></time>)
             </div>
             <div class="description">
                 Mapped by {{ db.mapper }}
