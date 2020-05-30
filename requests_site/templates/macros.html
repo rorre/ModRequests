@@ -1,4 +1,4 @@
-{% macro card(db, user) %}
+{% macro card(db, user, show_last_update=True) %}
     <div class="ui card">
         <div class="image">
             <img src="https://assets.ppy.sh/beatmaps/{{ db.mapset_id }}/covers/cover.jpg">
@@ -6,8 +6,11 @@
             <div class="content">
                 <a href="https://osu.ppy.sh/s/{{ db.mapset_id }}" class="header">{{ db.song }}</a>
             <div class="meta">
-                <time class="timeago" datetime="{{ db.requested_at.isoformat(timespec='seconds') }}Z"></time>(Last updated 
-                <time class="timeago" datetime="{{ db.last_updated.isoformat(timespec='seconds') }}Z"></time>)
+                Requested <time class="timeago" datetime="{{ db.requested_at.isoformat(timespec='seconds') }}Z"></time>
+                {% if show_last_update %}
+                <br>
+                Last updated <time class="timeago" datetime="{{ db.last_updated.isoformat(timespec='seconds') }}Z"></time>
+                {% endif %}
             </div>
             <div class="description">
                 Mapped by {{ db.mapper }}

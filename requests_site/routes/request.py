@@ -113,7 +113,8 @@ def listing():
         title="Requests list",
         scripts=["admin.js", "index.js"],
         next_url=next_url,
-        prev_url=prev_url
+        prev_url=prev_url,
+        show_last_update=False
     )
 
 
@@ -162,7 +163,8 @@ def archive():
         subtitle="All of the requests that is already done.",
         scripts=["admin.js", "index.js"],
         next_url=next_url,
-        prev_url=prev_url
+        prev_url=prev_url,
+        show_last_update=True
     )
 
 
@@ -186,5 +188,6 @@ def accepted():
         subtitle="Those who gets accepted. Once they're done, they will end up in Archive.",
         scripts=["admin.js", "index.js"],
         next_url=next_url,
-        prev_url=prev_url
+        prev_url=prev_url,
+        show_last_update=True
     )

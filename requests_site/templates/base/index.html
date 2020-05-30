@@ -15,7 +15,7 @@
     {% if reqs %}
         <div class="ui centered doubling cards">
             {% for db in reqs %}
-                {{ macros.card(db, current_user) }}
+                {{ macros.card(db, current_user, show_last_update) }}
             {% endfor %}
         </div>
     {% else %}
