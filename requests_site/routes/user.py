@@ -25,7 +25,10 @@ def logout():
 
 @blueprint.route("/authorize")
 def authorize():
-    token = oauth.osu.authorize_access_token()
+    try:
+        token = oauth.osu.authorize_access_token()
+    except:
+        return redirect(url_for("base.index"))
     resp = oauth.osu.get("me", token=token)
     profile = resp.json()
 
