@@ -64,6 +64,9 @@ class Request(db.Model):
     requested_at = db.Column(
         db.DateTime, index=True, nullable=False, default=datetime.utcnow
     )
+    last_updated = db.Column(
+        db.DateTime, index=True, default=datetime.utcnow
+    )
 
     song = db.Column(db.Unicode, nullable=False)
     link = db.Column(db.Unicode, nullable=True)

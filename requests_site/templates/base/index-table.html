@@ -1,0 +1,39 @@
+{% extends "layout.html" %}
+{% import 'macros.html' as macros %}
+
+{% block content %}
+    <h2 class="ui header">
+        {{ title }}
+        {% if subtitle %}
+        <div class="sub header">{{ subtitle }}</div>
+        {% endif %}
+    </h2>
+    <div class="ui divider"></div>
+
+    {% if reqs %}
+    <table class="ui celled padded table">
+        <thead><tr>
+            <th>Song</th>
+            <th>Mapper</th>
+            <th>Requested at</th>
+            <th>Last Updated</th>
+            <th>Status</th>
+            <th>Reason</th>
+        </tr></thead>
+        <tbody>
+            {% for db in reqs %}
+                <tr>
+                    <td><a href="https://osu.ppy.sh/s/{{ db.mapset_id }}">{{ db.song }}</a></td>
+                    <td>{{ db.mapper }}</td>
+                    <td><time class="timeago" datetime="{{ db.requested_at.isoformat(timespec='seconds') }}Z"></time></td>
+                    <td><time class="timeago" datetime="{{ db.last_updated.isoformat(timespec='seconds') }}Z"></time></td>
+                    <td>{{ db.status.name }}</td>
+                    <td>{{ db.reason }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+        No reqs available \o/
+    {% endif %}
+{% endblock %}

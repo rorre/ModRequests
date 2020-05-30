@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from flask import (
     Blueprint,
     flash,
@@ -58,6 +60,7 @@ def update(set_id):
         data = request.json
         for key in data:
             setattr(mapset, key, data[key])
+        mapset.last_updated = datetime.utcnow()
         db.session.add(mapset)
         db.session.commit()
         send_hook("update_request", mapset)
@@ -115,7 +118,7 @@ def mine():
         .all()
     )
     return render_template(
-        "base/index.html",
+        "base/index-table.html",
         reqs=reqs,
         title="My requests",
         subtitle="Where all of your (past) requests resides.",
