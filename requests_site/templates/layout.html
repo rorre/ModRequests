@@ -59,6 +59,28 @@
             {% endwith %}
 
             {% block content %}{% endblock %}
+
+            <br><br>
+
+            <div class="ui aligned grid">
+                {% if prev_url %}
+                <div class="left floated six wide column">
+                    <a class="ui labeled icon button" href="{{ prev_url }}">
+                        <i class="left arrow icon"></i>
+                        Previous
+                    </a>
+                </div>
+                {% endif %}
+
+                {% if next_url %}
+                <div class="right aligned six wide column">
+                    <a class="ui right labeled icon button" href="{{ next_url }}">
+                        <i class="right arrow icon"></i>
+                        Next
+                    </a>
+                </div>
+                {% endif %}
+            </div>
         </div>
         {% assets "js_all" %}
             <script src="{{ ASSET_URL }}"></script>

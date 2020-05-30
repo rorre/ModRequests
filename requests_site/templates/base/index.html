@@ -13,10 +13,10 @@
     <div class="ui hidden negative message" id="err"></div>
     
     {% if reqs %}
-        <div class="ui cards">
-        {% for db in reqs %}
-            {{ macros.card(db, current_user) }}
-        {% endfor %}
+        <div class="ui centered doubling cards">
+            {% for db in reqs %}
+                {{ macros.card(db, current_user) }}
+            {% endfor %}
         </div>
     {% else %}
         No reqs available \o/

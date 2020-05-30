@@ -11,14 +11,14 @@
     <div class="ui divider"></div>
 
     {% if reqs %}
-    <table class="ui celled padded table">
+    <table class="ui celled table">
         <thead><tr>
-            <th>Song</th>
-            <th>Mapper</th>
-            <th>Requested at</th>
-            <th>Last Updated</th>
-            <th>Status</th>
-            <th>Reason</th>
+            <th class="three wide">Song</th>
+            <th class="three wide">Mapper</th>
+            <th class="two wide">Requested at</th>
+            <th class="two wide">Last Updated</th>
+            <th class="two wide">Status</th>
+            <th class="four wide">Reason</th>
         </tr></thead>
         <tbody>
             {% for db in reqs %}
@@ -28,7 +28,7 @@
                     <td><time class="timeago" datetime="{{ db.requested_at.isoformat(timespec='seconds') }}Z"></time></td>
                     <td><time class="timeago" datetime="{{ db.last_updated.isoformat(timespec='seconds') }}Z"></time></td>
                     <td>{{ db.status.name }}</td>
-                    <td>{{ db.reason }}</td>
+                    <td>{{ db.reason | nlbr }}</td>
                 </tr>
             {% endfor %}
         </tbody>

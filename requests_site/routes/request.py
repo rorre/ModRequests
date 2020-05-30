@@ -96,63 +96,95 @@ def search(query):
 
 @blueprint.route("/list")
 def listing():
+    page = request.args.get('page', 1, type=int)
     reqs = (
         Request.query.filter(Request.status_ == 0)
         .order_by(Request.requested_at.desc())
-        .all()
+        .paginate(page, 10, False)
     )
+    next_url = url_for('request.listing', page=reqs.next_num) \
+        if reqs.has_next else None
+    prev_url = url_for('request.listing', page=reqs.prev_num) \
+        if reqs.has_prev else None
+
     return render_template(
         "base/index.html",
-        reqs=reqs,
+        reqs=reqs.items,
         title="Requests list",
         scripts=["admin.js", "index.js"],
+        next_url=next_url,
+        prev_url=prev_url
     )
 
 
 @blueprint.route("/list/mine")
 @login_required
 def mine():
+    page = request.args.get('page', 1, type=int)
     reqs = (
         Request.query.filter(Request.requester == current_user)
         .order_by(Request.requested_at.desc())
-        .all()
+        .paginate(page, 10, False)
     )
+    next_url = url_for('request.listing', page=reqs.next_num) \
+        if reqs.has_next else None
+    prev_url = url_for('request.listing', page=reqs.prev_num) \
+        if reqs.has_prev else None
+
     return render_template(
         "base/index-table.html",
-        reqs=reqs,
+        reqs=reqs.items,
         title="My requests",
         subtitle="Where all of your (past) requests resides.",
         scripts=["admin.js", "index.js"],
+        next_url=next_url,
+        prev_url=prev_url
     )
 
 
 @blueprint.route("/list/archive")
 def archive():
+    page = request.args.get('page', 1, type=int)
     reqs = (
         Request.query.filter(Request.status_ == 3)
         .order_by(Request.requested_at.desc())
-        .all()
+        .paginate(page, 10, False)
     )
+    next_url = url_for('request.listing', page=reqs.next_num) \
+        if reqs.has_next else None
+    prev_url = url_for('request.listing', page=reqs.prev_num) \
+        if reqs.has_prev else None
+
     return render_template(
         "base/index.html",
-        reqs=reqs,
+        reqs=reqs.items,
         title="Archived requests",
         subtitle="All of the requests that is already done.",
         scripts=["admin.js", "index.js"],
+        next_url=next_url,
+        prev_url=prev_url
     )
 
 
 @blueprint.route("/list/accepted")
 def accepted():
+    page = request.args.get('page', 1, type=int)
     reqs = (
         Request.query.filter(Request.status_ == 2)
         .order_by(Request.requested_at.desc())
-        .all()
+        .paginate(page, 10, False)
     )
+    next_url = url_for('request.listing', page=reqs.next_num) \
+        if reqs.has_next else None
+    prev_url = url_for('request.listing', page=reqs.prev_num) \
+        if reqs.has_prev else None
+
     return render_template(
         "base/index.html",
-        reqs=reqs,
+        reqs=reqs.items,
         title="Accepted requests",
         subtitle="Those who gets accepted. Once they're done, they will end up in Archive.",
         scripts=["admin.js", "index.js"],
+        next_url=next_url,
+        prev_url=prev_url
     )

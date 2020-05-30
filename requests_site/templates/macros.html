@@ -18,9 +18,6 @@
                 <i class="info circle icon"></i>
                 {{ db.status.name }}
             </a>
-            {% if db.reason %}
-            | <span class="reason" data-html="<p>{{ db.reason | nlbr }}</p>">Why?</span>
-            {% endif %}
             {% if user.is_admin and db.status.value == 0 %}
             <div>
                 <div class="ui two buttons">
