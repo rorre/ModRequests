@@ -7,7 +7,7 @@
                 <a href="https://osu.ppy.sh/s/{{ db.mapset_id }}" class="header">{{ db.song }}</a>
             <div class="meta">
                 Requested <time class="timeago" datetime="{{ db.requested_at.isoformat(timespec='seconds') }}Z"></time>
-                {% if show_last_update %}
+                {% if show_last_update and db.last_updated %}
                 <br>
                 Last updated <time class="timeago" datetime="{{ db.last_updated.isoformat(timespec='seconds') }}Z"></time>
                 {% endif %}

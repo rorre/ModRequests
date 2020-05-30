@@ -26,7 +26,11 @@
                     <td><a href="https://osu.ppy.sh/s/{{ db.mapset_id }}">{{ db.song }}</a></td>
                     <td>{{ db.mapper }}</td>
                     <td><time class="timeago" datetime="{{ db.requested_at.isoformat(timespec='seconds') }}Z"></time></td>
+                    {% if db.last_updated %}
                     <td><time class="timeago" datetime="{{ db.last_updated.isoformat(timespec='seconds') }}Z"></time></td>
+                    {% else %}
+                    <td>None</td>
+                    {% endif %}
                     <td>{{ db.status.name }}</td>
                     <td>{{ db.reason | nlbr }}</td>
                 </tr>
