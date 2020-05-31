@@ -14,21 +14,22 @@ def create_app(config_file="config.json"):
     with open(config_file, "r") as f:
         data = json.load(f)
 
-    sentry_sdk.init(
-        dsn=data["SENTRY_URL"],
-        integrations=[FlaskIntegration()]
-    )
+    sentry_sdk.init(dsn=data["SENTRY_URL"], integrations=[FlaskIntegration()])
 
-    app = Flask(
-        __name__,
-        static_url_path='',
-        static_folder='public'
-    )
+    app = Flask(__name__, static_url_path="", static_folder="public")
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
     app.config["TEMPLATES_AUTO_RELOAD"] = True
     app.config.from_mapping(data)
 
-    from requests_site.plugins import admin, db, login_manager, oauth, migrate, bundler, nl2br
+    from requests_site.plugins import (
+        admin,
+        db,
+        login_manager,
+        oauth,
+        migrate,
+        bundler,
+        nl2br,
+    )
     from requests_site.models import User, Request
 
     admin.init_app(app)
@@ -37,7 +38,7 @@ def create_app(config_file="config.json"):
     login_manager.init_app(app)
     migrate.init_app(app, db)
     bundler.init_app(app)
-    app.jinja_env.filters['nlbr'] = nl2br
+    app.jinja_env.filters["nlbr"] = nl2br
 
     admin.add_view(AdminView(User, db.session, endpoint="/user"))
     admin.add_view(AdminView(Request, db.session, endpoint="/req"))

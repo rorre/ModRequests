@@ -12,6 +12,7 @@ from flask import (
 )
 from flask_login import current_user, login_required
 from flask_wtf import FlaskForm
+from sqlalchemy import and_
 from wtforms.fields import IntegerField, SubmitField, TextField
 from wtforms.fields.html5 import URLField
 from wtforms.validators import Required
@@ -36,6 +37,26 @@ class NewRequestForm(FlaskForm):
 def create():
     form = NewRequestForm()
     if form.validate_on_submit():
+        existing_requester = Request.query.filter(
+            and_(
+                Request.requester_id == current_user.osu_uid,
+                Request.status_ == Status.Pending.value,
+            )
+        ).all()
+        if existing_requester:
+            flash("You already have a request opened.")
+            return render_template("base/req.html", form=form, scripts=["request.js"])
+
+        existing_request = Request.query.filter(
+            and_(
+                Request.mapset_id == form.mapset_id.data,
+                Request.status_.in_([Status.Pending.value, Status.Accepted.value]),
+            )
+        ).all()
+        if existing_request:
+            flash("There is a pending request for that beatmap already.")
+            return render_template("base/req.html", form=form, scripts=["request.js"])
+
         request = Request(
             status_=Status.Pending.value,
             song=form.song.data,
@@ -96,16 +117,14 @@ def search(query):
 
 @blueprint.route("/list")
 def listing():
-    page = request.args.get('page', 1, type=int)
+    page = request.args.get("page", 1, type=int)
     reqs = (
         Request.query.filter(Request.status_ == 0)
         .order_by(Request.requested_at.desc())
         .paginate(page, 10, False)
     )
-    next_url = url_for('request.listing', page=reqs.next_num) \
-        if reqs.has_next else None
-    prev_url = url_for('request.listing', page=reqs.prev_num) \
-        if reqs.has_prev else None
+    next_url = url_for("request.listing", page=reqs.next_num) if reqs.has_next else None
+    prev_url = url_for("request.listing", page=reqs.prev_num) if reqs.has_prev else None
 
     return render_template(
         "base/index.html",
@@ -114,23 +133,21 @@ def listing():
         scripts=["admin.js", "index.js"],
         next_url=next_url,
         prev_url=prev_url,
-        show_last_update=False
+        show_last_update=False,
     )
 
 
 @blueprint.route("/list/mine")
 @login_required
 def mine():
-    page = request.args.get('page', 1, type=int)
+    page = request.args.get("page", 1, type=int)
     reqs = (
         Request.query.filter(Request.requester == current_user)
         .order_by(Request.requested_at.desc())
         .paginate(page, 10, False)
     )
-    next_url = url_for('request.listing', page=reqs.next_num) \
-        if reqs.has_next else None
-    prev_url = url_for('request.listing', page=reqs.prev_num) \
-        if reqs.has_prev else None
+    next_url = url_for("request.listing", page=reqs.next_num) if reqs.has_next else None
+    prev_url = url_for("request.listing", page=reqs.prev_num) if reqs.has_prev else None
 
     return render_template(
         "base/index-table.html",
@@ -139,22 +156,20 @@ def mine():
         subtitle="Where all of your (past) requests resides.",
         scripts=["admin.js", "index.js"],
         next_url=next_url,
-        prev_url=prev_url
+        prev_url=prev_url,
     )
 
 
 @blueprint.route("/list/archive")
 def archive():
-    page = request.args.get('page', 1, type=int)
+    page = request.args.get("page", 1, type=int)
     reqs = (
         Request.query.filter(Request.status_ == 3)
         .order_by(Request.requested_at.desc())
         .paginate(page, 10, False)
     )
-    next_url = url_for('request.listing', page=reqs.next_num) \
-        if reqs.has_next else None
-    prev_url = url_for('request.listing', page=reqs.prev_num) \
-        if reqs.has_prev else None
+    next_url = url_for("request.listing", page=reqs.next_num) if reqs.has_next else None
+    prev_url = url_for("request.listing", page=reqs.prev_num) if reqs.has_prev else None
 
     return render_template(
         "base/index.html",
@@ -164,22 +179,20 @@ def archive():
         scripts=["admin.js", "index.js"],
         next_url=next_url,
         prev_url=prev_url,
-        show_last_update=True
+        show_last_update=True,
     )
 
 
 @blueprint.route("/list/accepted")
 def accepted():
-    page = request.args.get('page', 1, type=int)
+    page = request.args.get("page", 1, type=int)
     reqs = (
         Request.query.filter(Request.status_ == 2)
         .order_by(Request.requested_at.desc())
         .paginate(page, 10, False)
     )
-    next_url = url_for('request.listing', page=reqs.next_num) \
-        if reqs.has_next else None
-    prev_url = url_for('request.listing', page=reqs.prev_num) \
-        if reqs.has_prev else None
+    next_url = url_for("request.listing", page=reqs.next_num) if reqs.has_next else None
+    prev_url = url_for("request.listing", page=reqs.prev_num) if reqs.has_prev else None
 
     return render_template(
         "base/index.html",
@@ -189,5 +202,5 @@ def accepted():
         scripts=["admin.js", "index.js"],
         next_url=next_url,
         prev_url=prev_url,
-        show_last_update=True
+        show_last_update=True,
     )
