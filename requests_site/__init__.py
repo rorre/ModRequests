@@ -6,15 +6,15 @@ from flask import Flask, flash, redirect, url_for
 from flask_admin.contrib.sqla import ModelView
 from flask_login import current_user
 
-import sentry_sdk
-from sentry_sdk.integrations.flask import FlaskIntegration
-
 
 def create_app(config_file="config.json"):
     with open(config_file, "r") as f:
         data = json.load(f)
 
-    sentry_sdk.init(dsn=data["SENTRY_URL"], integrations=[FlaskIntegration()])
+    if "SENTRY_URL" in data:
+        import sentry_sdk
+        from sentry_sdk.integrations.flask import FlaskIntegration
+        sentry_sdk.init(dsn=data["SENTRY_URL"], integrations=[FlaskIntegration()])
 
     app = Flask(__name__, static_url_path="", static_folder="public")
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
