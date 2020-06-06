@@ -157,6 +157,7 @@ def mine():
         scripts=["admin.js", "index.js"],
         next_url=next_url,
         prev_url=prev_url,
+        with_reason=True
     )
 
 

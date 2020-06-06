@@ -18,7 +18,9 @@
             <th class="two wide">Requested at</th>
             <th class="two wide">Last Updated</th>
             <th class="two wide">Status</th>
+            {% if with_reason %}
             <th class="four wide">Reason</th>
+            {% endif %}
         </tr></thead>
         <tbody>
             {% for db in reqs %}
@@ -32,7 +34,9 @@
                     <td>None</td>
                     {% endif %}
                     <td>{{ db.status.name }}</td>
+                    {% if with_reason %}
                     <td>{{ db.reason | nlbr }}</td>
+                    {% endif %}
                 </tr>
             {% endfor %}
         </tbody>
