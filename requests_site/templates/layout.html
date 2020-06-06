@@ -53,17 +53,18 @@
                 {% if current_user.is_authenticated %}
                     <a href="{{ url_for('request.create') }}" class="item">Request Mod</a>
                     <a href="{{ url_for('user.logout') }}" class="item">Logout</a>
-                    <div class="right menu">
-                        <div class="ui right aligned category search item">
-                            <div class="ui icon input">
-                                <input class="prompt" type="text" placeholder="Search">
-                                <i class="search link icon"></i>
-                            </div>
-                        </div>
-                    </div>
                 {% else %}
                     <a href="{{ url_for('user.login') }}" class="item">Login</a>
                 {% endif %}
+
+                <div class="right menu">
+                    <div class="ui right aligned category search item">
+                        <div class="ui icon input">
+                            <input class="prompt" type="text" placeholder="Search">
+                            <i class="search link icon"></i>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
 
