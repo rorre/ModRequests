@@ -39,6 +39,7 @@
             <div class="ui container">
                 <a href="{{ url_for('base.index') }}" class="header item">Ren's Requests</a>
                 <a href="{{ url_for('request.accepted') }}" class="item">Accepted Requests</a>
+                <a href="{{ url_for('request.nominations') }}" class="item">Nominations</a>
                 <a href="{{ url_for('request.archive') }}" class="item">Archive</a>
                 {% if current_user.is_authenticated %}
                     <a href="{{ url_for('request.mine') }}" class="item">My Requests</a>

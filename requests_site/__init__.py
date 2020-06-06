@@ -14,6 +14,7 @@ def create_app(config_file="config.json"):
     if "SENTRY_URL" in data:
         import sentry_sdk
         from sentry_sdk.integrations.flask import FlaskIntegration
+
         sentry_sdk.init(dsn=data["SENTRY_URL"], integrations=[FlaskIntegration()])
 
     app = Flask(__name__, static_url_path="", static_folder="public")

@@ -29,6 +29,10 @@
                 </div>
             </div>
             {% elif user.is_admin and db.status.value == 2 %}
+            <div class="ui checkbox">
+                <input type="checkbox" id="nominate-{{ db.id }}">
+                <label>Nominating</label>
+            </div>
             <div class="ui bottom attached button archivebtn" data-set-id="{{ db.id }}">
                 <i class="inbox icon"></i>
                 Archive Request

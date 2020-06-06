@@ -50,6 +50,8 @@ class Status(enum.IntEnum):
     Declined = 1
     Accepted = 2
     Archived = 3
+    Waiting_For_Recheck = 4
+    Nominated = 5
 
 
 class Request(db.Model):

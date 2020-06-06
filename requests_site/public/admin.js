@@ -29,6 +29,16 @@ $(".declinereq").click(function (e) {
 
 $(".archivebtn").click(function (e) {
     const set_id = $(this).data("set-id")
+    const checkbox_val = $("#nominate-" + set_id).prop('checked')
+    var status, archive;
+    if (checkbox_val) {
+        status = 4
+        archive = false
+    } else {
+        status = 3
+        archive = true
+    }
+
     $('body').toast({
         message: 'Are you sure you want to archive?',
         displayTime: 0,
@@ -39,7 +49,7 @@ $(".archivebtn").click(function (e) {
                 class: "green",
                 click: () => {
                     $('body').toast({ message: "Archiving..." })
-                    axios.post("/request/" + set_id, {"status_": 3, "archive": true}).then((e) => {
+                    axios.post("/request/" + set_id, {"status_": status, "archive": archive}).then((e) => {
                         $($(this).parents()[1]).remove()
                         $('body').toast({ message: "Done!" })
                     }).catch(handle_error)

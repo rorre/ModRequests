@@ -12,7 +12,7 @@ from flask import (
 )
 from flask_login import current_user, login_required
 from flask_wtf import FlaskForm
-from sqlalchemy import and_
+from sqlalchemy import and_, or_
 from wtforms.fields import IntegerField, SubmitField, TextField
 from wtforms.fields.html5 import URLField
 from wtforms.validators import Required
@@ -157,7 +157,7 @@ def mine():
         scripts=["admin.js", "index.js"],
         next_url=next_url,
         prev_url=prev_url,
-        with_reason=True
+        with_reason=True,
     )
 
 
@@ -192,8 +192,12 @@ def accepted():
         .order_by(Request.requested_at.desc())
         .paginate(page, 10, False)
     )
-    next_url = url_for("request.accepted", page=reqs.next_num) if reqs.has_next else None
-    prev_url = url_for("request.accepted", page=reqs.prev_num) if reqs.has_prev else None
+    next_url = (
+        url_for("request.accepted", page=reqs.next_num) if reqs.has_next else None
+    )
+    prev_url = (
+        url_for("request.accepted", page=reqs.prev_num) if reqs.has_prev else None
+    )
 
     return render_template(
         "base/index.html",
@@ -204,4 +208,31 @@ def accepted():
         next_url=next_url,
         prev_url=prev_url,
         show_last_update=True,
+    )
+
+
+@blueprint.route("/list/nominations")
+def nominations():
+    page = request.args.get("page", 1, type=int)
+    reqs = (
+        Request.query.filter(or_(Request.status_ == 4, Request.status_ == 5))
+        .order_by(Request.requested_at.desc())
+        .paginate(page, 10, False)
+    )
+    next_url = (
+        url_for("request.nominations", page=reqs.next_num) if reqs.has_next else None
+    )
+    prev_url = (
+        url_for("request.nominations", page=reqs.prev_num) if reqs.has_prev else None
+    )
+
+    return render_template(
+        "base/index-table.html",
+        reqs=reqs.items,
+        title="Nominations",
+        subtitle="Beatmaps that got me interested in pushing will be logged here.",
+        scripts=["admin.js", "index.js"],
+        next_url=next_url,
+        prev_url=prev_url,
+        with_reason=False,
     )

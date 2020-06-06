@@ -33,7 +33,7 @@
                     {% else %}
                     <td>None</td>
                     {% endif %}
-                    <td>{{ db.status.name }}</td>
+                    <td>{{ db.status.name | replace("_", " ") }}</td>
                     {% if with_reason %}
                     <td>{{ db.reason | nlbr }}</td>
                     {% endif %}
