@@ -28,12 +28,19 @@
                     <td><a href="https://osu.ppy.sh/s/{{ db.mapset_id }}">{{ db.song }}</a></td>
                     <td>{{ db.mapper }}</td>
                     <td><time class="timeago" datetime="{{ db.requested_at.isoformat(timespec='seconds') }}Z"></time></td>
+                    
                     {% if db.last_updated %}
-                    <td><time class="timeago" datetime="{{ db.last_updated.isoformat(timespec='seconds') }}Z"></time></td>
+                        <td><time class="timeago" datetime="{{ db.last_updated.isoformat(timespec='seconds') }}Z"></time></td>
                     {% else %}
-                    <td>None</td>
+                        <td>None</td>
                     {% endif %}
-                    <td>{{ db.status.name | replace("_", " ") }}</td>
+
+                    <td>{{ db.status.name | replace("_", " ") }}
+                    {% if db.status_ == 4 and current_user.is_authenticated %}
+                        <div class="ui green button nominatedbtn" data-set-id="{{ db.id }}">Mark as Nominated</div>
+                    {% endif %}
+                    </td>
+
                     {% if with_reason %}
                     <td>{{ db.reason | nlbr }}</td>
                     {% endif %}
