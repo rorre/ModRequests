@@ -14,10 +14,27 @@ class User(db.Model):
     expires_at = db.Column(db.Integer)
 
     is_admin = db.Column(db.Boolean, index=True, nullable=False, default=False)
+    is_bn = db.Column(db.Boolean, index=True, nullable=False, default=False)
+    is_closed = db.Column(db.Boolean, index=True, nullable=False, default=False)
     is_active = True
     is_authenticated = True
 
-    requests = db.relationship("Request", backref="requester", lazy="dynamic")
+    requests = db.relationship(
+        "Request",
+        backref="requester",
+        lazy="dynamic",
+        primaryjoin="User.osu_uid == Request.requester_id",
+    )
+    bn_reqs = db.relationship(
+        "Request",
+        backref="target_bn",
+        lazy="dynamic",
+        primaryjoin="User.osu_uid == Request.target_bn_id",
+    )
+
+    allow_multiple_reqs = db.Column(
+        db.Boolean, index=True, nullable=False, default=False
+    )
 
     @staticmethod
     @login_manager.user_loader
@@ -63,6 +80,7 @@ class Request(db.Model):
     )
 
     requester_id = db.Column(db.Integer, db.ForeignKey("users.osu_uid"))
+    target_bn_id = db.Column(db.Integer, db.ForeignKey("users.osu_uid"))
     requested_at = db.Column(
         db.DateTime, index=True, nullable=False, default=datetime.utcnow
     )

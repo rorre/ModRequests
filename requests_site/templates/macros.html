@@ -21,14 +21,14 @@
                 <i class="info circle icon"></i>
                 {{ db.status.name }}
             </a>
-            {% if user.is_admin and db.status.value == 0 %}
+            {% if user.is_bn and db.target_bn_id == user.osu_uid and db.status.value == 0 %}
             <div>
                 <div class="ui two buttons">
                     <div class="ui basic green button acceptreq" data-set-id="{{ db.id }}">Accept</div>
                     <div class="ui basic red button declinereq" data-set-id="{{ db.id }}">Decline</div>
                 </div>
             </div>
-            {% elif user.is_admin and db.status.value == 2 %}
+            {% elif user.is_bn and db.target_bn_id == user.osu_uid and db.status.value == 2 %}
             <div class="ui checkbox">
                 <input type="checkbox" id="nominate-{{ db.id }}">
                 <label>Nominating</label>

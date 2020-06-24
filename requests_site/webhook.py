@@ -1,7 +1,7 @@
 from datetime import datetime
 
 import discord
-from discord import Webhook, RequestsWebhookAdapter
+from discord import RequestsWebhookAdapter, Webhook
 from flask import current_app
 
 from requests_site.decorator import run_async

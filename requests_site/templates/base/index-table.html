@@ -17,6 +17,7 @@
             <th class="three wide">Mapper</th>
             <th class="two wide">Requested at</th>
             <th class="two wide">Last Updated</th>
+            <th class="two wide">Requested to</th>
             <th class="two wide">Status</th>
             {% if with_reason %}
             <th class="four wide">Reason</th>
@@ -35,8 +36,14 @@
                         <td>None</td>
                     {% endif %}
 
+                    {% if db.target_bn %}
+                        <td>{{ db.target_bn.username }}</td>
+                    {% else %}
+                        <td>None</td>
+                    {% endif %}
+
                     <td>{{ db.status.name | replace("_", " ") }}
-                    {% if db.status_ == 4 and current_user.is_authenticated %}
+                    {% if db.status_ == 4 and current_user.is_bn and db.target_bn_id == user.osu_uid %}
                         <div class="ui green button nominatedbtn" data-set-id="{{ db.id }}">Mark as Nominated</div>
                     {% endif %}
                     </td>

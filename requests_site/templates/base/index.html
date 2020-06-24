@@ -8,9 +8,19 @@
         <div class="sub header">{{ subtitle }}</div>
         {% endif %}
     </h2>
-    <div class="ui divider"></div>
 
+    <div class="ui divider"></div>
     <div class="ui hidden negative message" id="err"></div>
+
+    <form id="nominator_select">
+        <span>Nominator:</span>
+        <select class="ui dropdown" name="nominator" id="selector">
+            {% for bn in bns %}
+            <option value="{{bn.osu_uid}}">{{bn.username}}</option>
+            {% endfor %}
+        </select>
+    </form>
+    <div class="ui divider"></div>
     
     {% if reqs %}
         <div class="ui centered doubling cards">

@@ -2,26 +2,34 @@ from datetime import datetime
 
 from flask import (
     Blueprint,
+    abort,
+    current_app,
     flash,
     jsonify,
     redirect,
     render_template,
     request,
     url_for,
-    abort,
 )
 from flask_login import current_user, login_required
 from flask_wtf import FlaskForm
 from sqlalchemy import and_, or_
-from wtforms.fields import IntegerField, SubmitField, TextField
+from wtforms.fields import IntegerField, SelectField, SubmitField, TextField
 from wtforms.fields.html5 import URLField
 from wtforms.validators import Required
 
-from requests_site.decorator import admin_only
-from requests_site.models import Request, Status, db
+from requests_site.decorator import bn_only
+from requests_site.models import Request, Status, User, db
 from requests_site.webhook import send_hook
 
 blueprint = Blueprint("request", __name__, url_prefix="/request")
+bns = None
+
+
+@blueprint.before_request
+def get_bn():
+    global bns
+    bns = User.query.filter_by(is_bn=True).all()
 
 
 class NewRequestForm(FlaskForm):
@@ -30,30 +38,42 @@ class NewRequestForm(FlaskForm):
     mapset_id = IntegerField("Mapset ID", validators=[Required()])
     mapper = TextField("Mapper", validators=[Required()])
     submit = SubmitField("Submit", validators=[Required()])
+    target_bn = SelectField("Nominator", coerce=int)
 
 
 @blueprint.route("/create", methods=["GET", "POST"])
 @login_required
 def create():
     form = NewRequestForm()
+    form.target_bn.choices = [
+        (u.osu_uid, u.username) for u in User.query.filter_by(is_bn=True)
+    ]
     if form.validate_on_submit():
-        existing_requester = Request.query.filter(
-            and_(
-                Request.requester_id == current_user.osu_uid,
-                Request.status_ == Status.Pending.value,
-            )
-        ).all()
-        if existing_requester:
-            flash("You already have a request opened.")
+        target_bn = User.query.filter_by(osu_uid=form.target_bn.data).first()
+        if target_bn.is_closed:
+            flash(f"{target_bn.username} is currently closed.")
             return render_template("base/req.html", form=form, scripts=["request.js"])
 
-        existing_request = Request.query.filter(
+        if not target_bn.allow_multiple_reqs:
+            existing_request = Request.query.filter(
+                and_(
+                    Request.requester_id == current_user.osu_uid,
+                    Request.status_ == Status.Pending.value,
+                )
+            ).all()
+            if existing_request:
+                flash("You already have a request opened.")
+                return render_template(
+                    "base/req.html", form=form, scripts=["request.js"]
+                )
+
+        existing_map = Request.query.filter(
             and_(
                 Request.mapset_id == form.mapset_id.data,
                 Request.status_.in_([Status.Pending.value, Status.Accepted.value]),
             )
         ).all()
-        if existing_request:
+        if existing_map:
             flash("There is a pending request for that beatmap already.")
             return render_template("base/req.html", form=form, scripts=["request.js"])
 
@@ -63,6 +83,7 @@ def create():
             link=form.link.data,
             mapset_id=form.mapset_id.data,
             mapper=form.mapper.data,
+            target_bn=target_bn,
         )
         current_user.requests.append(request)
         db.session.add(request)
@@ -74,7 +95,7 @@ def create():
 
 
 @blueprint.route("/<int:set_id>", methods=["POST"])
-@admin_only
+@bn_only
 def update(set_id):
     mapset = Request.query.filter_by(id=set_id).first_or_404()
     try:
@@ -117,9 +138,14 @@ def search(query):
 
 @blueprint.route("/list")
 def listing():
+    nominator_id = request.args.get(
+        "nominator", current_app.config["DEFAULT_NOMINATOR"], type=int
+    )
     page = request.args.get("page", 1, type=int)
     reqs = (
-        Request.query.filter(Request.status_ == 0)
+        Request.query.filter(
+            and_(Request.status_ == 0, Request.target_bn_id == nominator_id)
+        )
         .order_by(Request.requested_at.desc())
         .paginate(page, 10, False)
     )
@@ -134,6 +160,7 @@ def listing():
         next_url=next_url,
         prev_url=prev_url,
         show_last_update=False,
+        bns=bns,
     )
 
 
@@ -163,9 +190,14 @@ def mine():
 
 @blueprint.route("/list/archive")
 def archive():
+    nominator_id = request.args.get(
+        "nominator", current_app.config["DEFAULT_NOMINATOR"], type=int
+    )
     page = request.args.get("page", 1, type=int)
     reqs = (
-        Request.query.filter(Request.status_ == 3)
+        Request.query.filter(
+            and_(Request.status_ == 3, Request.target_bn_id == nominator_id)
+        )
         .order_by(Request.requested_at.desc())
         .paginate(page, 10, False)
     )
@@ -181,14 +213,20 @@ def archive():
         next_url=next_url,
         prev_url=prev_url,
         show_last_update=True,
+        bns=bns,
     )
 
 
 @blueprint.route("/list/accepted")
 def accepted():
+    nominator_id = request.args.get(
+        "nominator", current_app.config["DEFAULT_NOMINATOR"], type=int
+    )
     page = request.args.get("page", 1, type=int)
     reqs = (
-        Request.query.filter(Request.status_ == 2)
+        Request.query.filter(
+            and_(Request.status_ == 2, Request.target_bn_id == nominator_id)
+        )
         .order_by(Request.requested_at.desc())
         .paginate(page, 10, False)
     )
@@ -208,14 +246,23 @@ def accepted():
         next_url=next_url,
         prev_url=prev_url,
         show_last_update=True,
+        bns=bns,
     )
 
 
 @blueprint.route("/list/nominations")
 def nominations():
+    nominator_id = request.args.get(
+        "nominator", current_app.config["DEFAULT_NOMINATOR"], type=int
+    )
     page = request.args.get("page", 1, type=int)
     reqs = (
-        Request.query.filter(or_(Request.status_ == 4, Request.status_ == 5))
+        Request.query.filter(
+            and_(
+                or_(Request.status_ == 4, Request.status_ == 5),
+                Request.target_bn_id == nominator_id,
+            )
+        )
         .order_by(Request.requested_at.desc())
         .paginate(page, 10, False)
     )
