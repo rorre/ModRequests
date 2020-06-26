@@ -31,7 +31,7 @@ def send_hook(event_type, beatmap):
 
     embed = discord.Embed(
         title=f"{beatmap.song}",
-        colour=colors.get(beatmap.status_, discord.Colour(0x4A90E2)),,
+        colour=colors.get(beatmap.status_, discord.Colour(0x4A90E2)),
         description=desc,
         timestamp=datetime.utcnow(),
     )
