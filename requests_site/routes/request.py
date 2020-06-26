@@ -189,16 +189,8 @@ def mine():
         .order_by(Request.requested_at.desc())
         .paginate(page, 10, False)
     )
-    next_url = (
-        url_for("request.mine", nominator=nominator_id, page=reqs.next_num)
-        if reqs.has_next
-        else None
-    )
-    prev_url = (
-        url_for("request.mine", nominator=nominator_id, page=reqs.prev_num)
-        if reqs.has_prev
-        else None
-    )
+    next_url = url_for("request.mine", page=reqs.next_num) if reqs.has_next else None
+    prev_url = url_for("request.mine", page=reqs.prev_num) if reqs.has_prev else None
 
     return render_template(
         "base/index-table.html",
