@@ -156,8 +156,16 @@ def listing():
         .order_by(Request.requested_at.desc())
         .paginate(page, 10, False)
     )
-    next_url = url_for("request.listing", page=reqs.next_num) if reqs.has_next else None
-    prev_url = url_for("request.listing", page=reqs.prev_num) if reqs.has_prev else None
+    next_url = (
+        url_for("request.listing", nominator=nominator_id, page=reqs.next_num)
+        if reqs.has_next
+        else None
+    )
+    prev_url = (
+        url_for("request.listing", nominator=nominator_id, page=reqs.prev_num)
+        if reqs.has_prev
+        else None
+    )
 
     return render_template(
         "base/index.html",
@@ -181,8 +189,16 @@ def mine():
         .order_by(Request.requested_at.desc())
         .paginate(page, 10, False)
     )
-    next_url = url_for("request.mine", page=reqs.next_num) if reqs.has_next else None
-    prev_url = url_for("request.mine", page=reqs.prev_num) if reqs.has_prev else None
+    next_url = (
+        url_for("request.mine", nominator=nominator_id, page=reqs.next_num)
+        if reqs.has_next
+        else None
+    )
+    prev_url = (
+        url_for("request.mine", nominator=nominator_id, page=reqs.prev_num)
+        if reqs.has_prev
+        else None
+    )
 
     return render_template(
         "base/index-table.html",
@@ -209,8 +225,16 @@ def archive():
         .order_by(Request.requested_at.desc())
         .paginate(page, 10, False)
     )
-    next_url = url_for("request.archive", page=reqs.next_num) if reqs.has_next else None
-    prev_url = url_for("request.archive", page=reqs.prev_num) if reqs.has_prev else None
+    next_url = (
+        url_for("request.archive", nominator=nominator_id, page=reqs.next_num)
+        if reqs.has_next
+        else None
+    )
+    prev_url = (
+        url_for("request.archive", nominator=nominator_id, page=reqs.prev_num)
+        if reqs.has_prev
+        else None
+    )
 
     return render_template(
         "base/index.html",
@@ -240,10 +264,14 @@ def accepted():
         .paginate(page, 10, False)
     )
     next_url = (
-        url_for("request.accepted", page=reqs.next_num) if reqs.has_next else None
+        url_for("request.accepted", nominator=nominator_id, page=reqs.next_num)
+        if reqs.has_next
+        else None
     )
     prev_url = (
-        url_for("request.accepted", page=reqs.prev_num) if reqs.has_prev else None
+        url_for("request.accepted", nominator=nominator_id, page=reqs.prev_num)
+        if reqs.has_prev
+        else None
     )
 
     return render_template(
@@ -277,10 +305,14 @@ def nominations():
         .paginate(page, 10, False)
     )
     next_url = (
-        url_for("request.nominations", page=reqs.next_num) if reqs.has_next else None
+        url_for("request.nominations", nominator=nominator_id, page=reqs.next_num)
+        if reqs.has_next
+        else None
     )
     prev_url = (
-        url_for("request.nominations", page=reqs.prev_num) if reqs.has_prev else None
+        url_for("request.nominations", nominator=nominator_id, page=reqs.prev_num)
+        if reqs.has_prev
+        else None
     )
 
     return render_template(
