@@ -26,7 +26,8 @@ def send_hook(event_type, beatmap):
         f"URL: {beatmap.link}\r\n"
         + f"Mapper: {beatmap.mapper}\r\n"
         + f"Requester: {beatmap.requester.username}\r\n"
-        + f"Status: {beatmap.status.name}"
+        + f"Status: {beatmap.status.name}\r\n"
+        + f"Target BN: {beatmap.target_bn.username}"
     )
 
     embed = discord.Embed(

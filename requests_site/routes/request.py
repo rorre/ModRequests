@@ -10,6 +10,7 @@ from flask import (
     render_template,
     request,
     url_for,
+    make_response,
 )
 from flask_login import current_user, login_required
 from flask_wtf import FlaskForm
@@ -102,6 +103,8 @@ def create():
 @bn_only
 def update(set_id):
     mapset = Request.query.filter_by(id=set_id).first_or_404()
+    if mapset.target_bn_id != current_user.osu_uid:
+        return make_response(jsonify(err="You can't control other BN's request."), 400)
     try:
         data = request.json
         for key in data:
@@ -112,7 +115,7 @@ def update(set_id):
         send_hook("update_request", mapset)
         return jsonify(msg="OK")
     except Exception:
-        return jsonify(err="An error occured.")
+        return make_response(jsonify(err="An error occured."), 500)
 
 
 @blueprint.route("/<int:set_id>/delete")
@@ -289,4 +292,6 @@ def nominations():
         next_url=next_url,
         prev_url=prev_url,
         with_reason=False,
+        bns=bns,
+        selected=nominator_id,
     )
