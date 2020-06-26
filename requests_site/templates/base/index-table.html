@@ -43,7 +43,7 @@
                     {% endif %}
 
                     <td>{{ db.status.name | replace("_", " ") }}
-                    {% if db.status_ == 4 and current_user.is_bn and db.target_bn_id == user.osu_uid %}
+                    {% if db.status_ == 4 and current_user.is_bn and db.target_bn_id == current_user.osu_uid %}
                         <div class="ui green button nominatedbtn" data-set-id="{{ db.id }}">Mark as Nominated</div>
                     {% endif %}
                     </td>

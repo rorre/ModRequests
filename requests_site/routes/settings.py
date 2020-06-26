@@ -1,27 +1,35 @@
 from flask import Blueprint, flash, render_template
 from flask_login import current_user
 from flask_wtf import FlaskForm
-from wtforms.fields import BooleanField
+from wtforms.fields import BooleanField, TextAreaField, SubmitField
 
 from requests_site.decorator import bn_only
 from requests_site.plugins import db
 
-blueprint = Blueprint("settings", __name__)
+blueprint = Blueprint("settings", __name__, url_prefix="/settings")
 
 
 class SettingsForm(FlaskForm):
     is_closed = BooleanField("Closed")
     allow_multiple_reqs = BooleanField("Allow Multiple Reqs")
+    rules = TextAreaField("Rules")
+    submit = SubmitField("Save")
 
 
-@blueprint.route("/")
+@blueprint.route("/", methods=["GET", "POST"])
 @bn_only
 def index():
     form = SettingsForm()
+    form.is_closed.default = current_user.is_closed
+    form.allow_multiple_reqs.default = current_user.allow_multiple_reqs
+    form.rules.default = current_user.rules
     if form.validate_on_submit():
-        current_user.is_closed = form.is_closed.value
-        current_user.allow_multiple_reqs = form.allow_multiple_reqs.value
+        current_user.is_closed = form.is_closed.data
+        current_user.allow_multiple_reqs = form.allow_multiple_reqs.data
+        current_user.rules = form.rules.data
         db.session.add(current_user)
         db.session.commit()
         flash("Done applying settings.")
-    return render_template("base/req.html", form=form)
+    else:
+        form.process()
+    return render_template("base/settings.html", form=form)

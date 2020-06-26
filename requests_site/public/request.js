@@ -2,14 +2,14 @@ var timer;
 var timeout = 1000;
 const mapsetRegexp = /http[s]?:\/\/osu\.ppy\.sh\/([b]?(?:eatmapset)?[s]?)\/([0-9]+)(?:#[a-z]+\/([0-9]+))?/
 
-$('#link').keyup(function(){
+$('#link').keyup(function () {
     clearTimeout(timer);
     if ($('#link').val()) {
         timer = setTimeout(doneTyping, timeout);
     }
 });
 
-$("#link").keydown(function(){
+$("#link").keydown(function () {
     clearTimeout(timer);
     $(".form").removeClass("loading")
     $("#song").val('')
@@ -19,14 +19,14 @@ $("#link").keydown(function(){
     $("#err").empty()
 })
 
-function doneTyping () {
+function doneTyping() {
     $(".form").addClass("loading")
     $("#err").addClass("hidden")
     $("#err").empty()
 
     const value = $('#link').val()
     var match = value.match(mapsetRegexp)
-    
+
     if (!match) {
         $(".form").removeClass("loading")
         $("#err").removeClass("hidden")
@@ -39,6 +39,13 @@ function doneTyping () {
             $("#song").val(response.data.song)
             $("#mapset_id").val(response.data.mapset_id)
             $("#mapper").val(response.data.mapper)
-        }).catch(handle_error).finally(()=>{$(".form").removeClass("loading")})
+        }).catch(handle_error).finally(() => { $(".form").removeClass("loading") })
     }
 }
+
+$("#target_bn").change(function () {
+    $this = $(this)
+    axios.get(`/rules/${$this.val()}`).then(function (response) {
+        $("#bn_rules").html(response.data)
+    }).catch(handle_error)
+})

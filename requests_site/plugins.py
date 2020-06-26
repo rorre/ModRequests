@@ -1,5 +1,7 @@
 import re
 
+import mistune
+
 from authlib.integrations.flask_client import OAuth
 from flask_admin import Admin
 from flask_assets import Bundle, Environment
@@ -18,6 +20,7 @@ naming_convention = {
 }
 
 db = SQLAlchemy(metadata=MetaData(naming_convention=naming_convention))
+md = mistune.Markdown()
 login_manager = LoginManager()
 oauth = OAuth()
 admin = Admin(name="Ren's Requests")

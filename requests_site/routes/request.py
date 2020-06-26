@@ -38,17 +38,20 @@ class NewRequestForm(FlaskForm):
     mapset_id = IntegerField("Mapset ID", validators=[Required()])
     mapper = TextField("Mapper", validators=[Required()])
     submit = SubmitField("Submit", validators=[Required()])
-    target_bn = SelectField("Nominator", coerce=int)
+    target_bn = SelectField("Nominator")
 
 
 @blueprint.route("/create", methods=["GET", "POST"])
 @login_required
 def create():
     form = NewRequestForm()
-    form.target_bn.choices = [
-        (u.osu_uid, u.username) for u in User.query.filter_by(is_bn=True)
-    ]
+    form.target_bn.choices = [("", "Nominator")]
+    for u in User.query.filter_by(is_bn=True):
+        extra = " (CLOSED)" if u.is_closed else ""
+        form.target_bn.choices.append([str(u.osu_uid), u.username + extra])
+
     if form.validate_on_submit():
+        form.target_bn.data = int(form.target_bn.data)
         target_bn = User.query.filter_by(osu_uid=form.target_bn.data).first()
         if target_bn.is_closed:
             flash(f"{target_bn.username} is currently closed.")
@@ -59,6 +62,7 @@ def create():
                 and_(
                     Request.requester_id == current_user.osu_uid,
                     Request.status_ == Status.Pending.value,
+                    Request.target_bn_id == form.target_bn.data,
                 )
             ).all()
             if existing_request:
@@ -90,7 +94,7 @@ def create():
         db.session.commit()
         send_hook("add_request", request)
         flash("Done adding request.")
-        return redirect(url_for("base.index"))
+        return redirect(url_for("request.listing", nominator=target_bn.osu_uid))
     return render_template("base/req.html", form=form, scripts=["request.js"])
 
 
@@ -161,6 +165,7 @@ def listing():
         prev_url=prev_url,
         show_last_update=False,
         bns=bns,
+        selected=nominator_id,
     )
 
 
@@ -214,6 +219,7 @@ def archive():
         prev_url=prev_url,
         show_last_update=True,
         bns=bns,
+        selected=nominator_id,
     )
 
 
@@ -247,6 +253,7 @@ def accepted():
         prev_url=prev_url,
         show_last_update=True,
         bns=bns,
+        selected=nominator_id,
     )
 
 

@@ -47,10 +47,10 @@
     </div>
 {% endmacro %}
 
-{% macro render_field(field, disabled=False) %}
+{% macro render_field(field, disabled=False, class=None) %}
 <div class="field">
     {{ field.label }}
-    {{ field(placeholder=field.label.text, readonly=disabled) }}
+    {{ field(placeholder=field.label.text, readonly=disabled, class=class) }}
     {% if field.errors %}
         <div class="ui negative message">
             <div class="header">
@@ -63,5 +63,27 @@
             </ul>
         </p>
     {% endif %}
+</div>
+{% endmacro %}
+
+
+{% macro render_checkbox(field) %}
+<div class="field">
+    <div class="ui checkbox">
+        {{ field(placeholder=field.label.text) }}
+        {{ field.label }}
+        {% if field.errors %}
+            <div class="ui negative message">
+                <div class="header">
+                    There is error on your input.
+                </div>
+                <ul class="list">
+                {% for error in field.errors %}
+                    <li>{{ error }}</li>
+                {% endfor %}
+                </ul>
+            </p>
+        {% endif %}
+    </div>
 </div>
 {% endmacro %}

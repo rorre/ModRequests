@@ -16,7 +16,7 @@
         <span>Nominator:</span>
         <select class="ui dropdown" name="nominator" id="selector">
             {% for bn in bns %}
-            <option value="{{bn.osu_uid}}">{{bn.username}}</option>
+            <option value="{{bn.osu_uid}}" {% if selected == bn.osu_uid %} selected {% endif %}>{{bn.username}}</option>
             {% endfor %}
         </select>
     </form>

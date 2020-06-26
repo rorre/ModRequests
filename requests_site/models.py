@@ -35,6 +35,7 @@ class User(db.Model):
     allow_multiple_reqs = db.Column(
         db.Boolean, index=True, nullable=False, default=False
     )
+    rules = db.Column(db.Text, default="No rules provided, maybe check their userpage.")
 
     @staticmethod
     @login_manager.user_loader

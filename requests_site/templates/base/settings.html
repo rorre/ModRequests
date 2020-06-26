@@ -1,0 +1,22 @@
+{% import 'macros.html' as macros %}
+{% extends "layout.html" %}
+
+{% block content %}
+<h2 class="ui header">
+    Settings
+</h2>
+<div class="ui divider"></div>
+
+<div class="ui hidden negative message" id="err"></div>
+
+<form class="ui form" method="POST">
+    {{ form.csrf_token }}
+    {{ macros.render_checkbox(form.is_closed) }}
+    {{ macros.render_checkbox(form.allow_multiple_reqs) }}
+    {{ macros.render_field(form.rules) }}
+    <div class="ui message">
+        <p>You can use markdown on Rules field.</p>
+    </div>
+    {{ form.submit(class_="ui button") }}
+</form>
+{% endblock %}
