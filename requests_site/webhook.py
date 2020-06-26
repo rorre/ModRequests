@@ -9,8 +9,6 @@ from requests_site.decorator import run_async
 colors = {
     0: discord.Colour(0xE29519),
     1: discord.Colour(0xA82033),
-    2: discord.Colour(0x4A90E2),
-    3: discord.Colour(0x4A90E2),
 }
 
 
@@ -33,7 +31,7 @@ def send_hook(event_type, beatmap):
 
     embed = discord.Embed(
         title=f"{beatmap.song}",
-        colour=colors.get(beatmap.status_),
+        colour=colors.get(beatmap.status_, discord.Colour(0x4A90E2)),,
         description=desc,
         timestamp=datetime.utcnow(),
     )
