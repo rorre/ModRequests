@@ -23,7 +23,7 @@ db = SQLAlchemy(metadata=MetaData(naming_convention=naming_convention))
 md = mistune.Markdown()
 login_manager = LoginManager()
 oauth = OAuth()
-admin = Admin(name="Ren's Requests")
+admin = Admin(name="BN Requests")
 migrate = Migrate()
 bundler = Environment()
 
