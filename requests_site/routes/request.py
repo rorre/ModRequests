@@ -52,6 +52,10 @@ def create():
         form.target_bn.choices.append([str(u.osu_uid), u.username + extra])
 
     if form.validate_on_submit():
+        if not form.target_bn.data:
+            flash("Invalid nominator.")
+            return render_template("base/req.html", form=form, scripts=["request.js"])
+
         form.target_bn.data = int(form.target_bn.data)
         target_bn = User.query.filter_by(osu_uid=form.target_bn.data).first()
         if target_bn.is_closed:
