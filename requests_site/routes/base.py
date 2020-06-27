@@ -56,3 +56,8 @@ def get_rules(uid):
         return make_response(jsonify(err="No user with that user id."), 400)
     rules_html = md(user.rules)
     return render_template("md.html", md=rules_html)
+
+
+@blueprint.route("/support")
+def support():
+    return render_template("base/support.html")
