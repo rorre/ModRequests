@@ -11,7 +11,8 @@ blueprint = Blueprint("settings", __name__, url_prefix="/settings")
 
 class SettingsForm(FlaskForm):
     is_closed = BooleanField("Closed")
-    allow_multiple_reqs = BooleanField("Allow Multiple Reqs")
+    allow_multiple_reqs = BooleanField("Allow multiple reqs")
+    show_rejected = BooleanField("Show rejected maps in Archive")
     rules = TextAreaField("Rules")
     submit = SubmitField("Save")
 
@@ -27,6 +28,7 @@ def index():
         current_user.is_closed = form.is_closed.data
         current_user.allow_multiple_reqs = form.allow_multiple_reqs.data
         current_user.rules = form.rules.data
+        current_user.show_rejected = form.show_rejected.data
         db.session.add(current_user)
         db.session.commit()
         flash("Done applying settings.")

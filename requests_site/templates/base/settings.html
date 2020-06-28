@@ -13,6 +13,7 @@
     {{ form.csrf_token }}
     {{ macros.render_checkbox(form.is_closed) }}
     {{ macros.render_checkbox(form.allow_multiple_reqs) }}
+    {{ macros.render_checkbox(form.show_rejected) }}
     {{ macros.render_field(form.rules) }}
     <div class="ui message">
         <p>You can use markdown on Rules field.</p>

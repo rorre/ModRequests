@@ -15,6 +15,7 @@ from flask import (
 from flask_login import current_user, login_required
 from flask_wtf import FlaskForm
 from sqlalchemy import and_, or_
+from sqlalchemy.orm import load_only
 from wtforms.fields import IntegerField, SelectField, SubmitField, TextField
 from wtforms.fields.html5 import URLField
 from wtforms.validators import Required
@@ -211,11 +212,20 @@ def archive():
     nominator_id = request.args.get(
         "nominator", current_app.config["DEFAULT_NOMINATOR"], type=int
     )
+    show_rejected = User.query.options(load_only("show_rejected")).get_or_404(
+        nominator_id
+    )
+    if show_rejected:
+        filter_op = and_(Request.status_ == 3, Request.target_bn_id == nominator_id)
+    else:
+        filter_op = and_(
+            or_(Request.status_ == 3, Request.status_ == 1),
+            Request.target_bn_id == nominator_id,
+        )
+
     page = request.args.get("page", 1, type=int)
     reqs = (
-        Request.query.filter(
-            and_(Request.status_ == 3, Request.target_bn_id == nominator_id)
-        )
+        Request.query.filter(filter_op)
         .order_by(Request.requested_at.desc())
         .paginate(page, 10, False)
     )
@@ -231,14 +241,13 @@ def archive():
     )
 
     return render_template(
-        "base/index.html",
+        "base/index-modal.html",
         reqs=reqs.items,
         title="Archived requests",
         subtitle="All of the requests that is already done.",
         scripts=["admin.js", "index.js"],
         next_url=next_url,
         prev_url=prev_url,
-        show_last_update=True,
         bns=bns,
         selected=nominator_id,
     )
