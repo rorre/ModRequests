@@ -196,14 +196,13 @@ def mine():
     prev_url = url_for("request.mine", page=reqs.prev_num) if reqs.has_prev else None
 
     return render_template(
-        "base/index-table.html",
+        "base/index-modal.html",
         reqs=reqs.items,
         title="My requests",
         subtitle="Where all of your (past) requests resides.",
         scripts=["admin.js", "index.js"],
         next_url=next_url,
         prev_url=prev_url,
-        with_reason=True,
     )
 
 

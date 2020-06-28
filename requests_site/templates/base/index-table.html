@@ -27,13 +27,10 @@
         <thead><tr>
             <th class="three wide">Song</th>
             <th class="three wide">Mapper</th>
-            <th class="two wide">Requested at</th>
-            <th class="two wide">Last Updated</th>
-            <th class="two wide">Requested to</th>
-            <th class="two wide">Status</th>
-            {% if with_reason %}
-            <th class="four wide">Reason</th>
-            {% endif %}
+            <th class="three wide">Requested at</th>
+            <th class="three wide">Last Updated</th>
+            <th class="three wide">Requested to</th>
+            <th class="three wide">Status</th>
         </tr></thead>
         <tbody>
             {% for db in reqs %}
@@ -59,10 +56,6 @@
                         <div class="ui green button nominatedbtn" data-set-id="{{ db.id }}">Mark as Nominated</div>
                     {% endif %}
                     </td>
-
-                    {% if with_reason %}
-                    <td>{{ db.reason | nlbr }}</td>
-                    {% endif %}
                 </tr>
             {% endfor %}
         </tbody>

@@ -1,50 +1,50 @@
 {% macro card(db, user, show_last_update=True) %}
-    <div class="ui card">
-        <div class="image">
-            <img src="https://assets.ppy.sh/beatmaps/{{ db.mapset_id }}/covers/cover.jpg">
-        </div>
-            <div class="content">
-                <a href="https://osu.ppy.sh/s/{{ db.mapset_id }}" class="header">{{ db.song }}</a>
-            <div class="meta">
-                Requested <time class="timeago" datetime="{{ db.requested_at.isoformat(timespec='seconds') }}Z"></time>
-                {% if show_last_update and db.last_updated %}
-                <br>
-                Last updated <time class="timeago" datetime="{{ db.last_updated.isoformat(timespec='seconds') }}Z"></time>
-                {% endif %}
-            </div>
-            <div class="description">
-                Mapped by {{ db.mapper }}
-            </div>
-        </div>
-        <div class="extra content">
-            <a>
-                <i class="info circle icon"></i>
-                {{ db.status.name }}
-            </a>
-            {% if user.is_bn and db.target_bn_id == user.osu_uid and db.status.value == 0 %}
-            <div>
-                <div class="ui two buttons">
-                    <div class="ui basic green button acceptreq" data-set-id="{{ db.id }}">Accept</div>
-                    <div class="ui basic red button declinereq" data-set-id="{{ db.id }}">Decline</div>
-                </div>
-            </div>
-            {% elif user.is_bn and db.target_bn_id == user.osu_uid and db.status.value == 2 %}
-            <div class="ui checkbox">
-                <input type="checkbox" id="nominate-{{ db.id }}">
-                <label>Nominating</label>
-            </div>
-            <div class="ui bottom attached button archivebtn" data-set-id="{{ db.id }}">
-                <i class="inbox icon"></i>
-                Archive Request
-            </div>
-            {% elif user.is_authenticated and db.status.value == 0 and db.requester_id == user.osu_uid %}
-            <div class="ui bottom attached button cancelbtn" data-set-id="{{ db.id }}">
-                <i class="minus icon"></i>
-                Cancel Request
-            </div>
+<div class="ui card">
+    <div class="image">
+        <img src="https://assets.ppy.sh/beatmaps/{{ db.mapset_id }}/covers/cover.jpg">
+    </div>
+    <div class="content">
+        <a href="https://osu.ppy.sh/s/{{ db.mapset_id }}" class="header">{{ db.song }}</a>
+        <div class="meta">
+            Requested <time class="timeago" datetime="{{ db.requested_at.isoformat(timespec='seconds') }}Z"></time>
+            {% if show_last_update and db.last_updated %}
+            <br>
+            Last updated <time class="timeago" datetime="{{ db.last_updated.isoformat(timespec='seconds') }}Z"></time>
             {% endif %}
         </div>
+        <div class="description">
+            Mapped by {{ db.mapper }}
+        </div>
     </div>
+    <div class="extra content">
+        <a>
+            <i class="info circle icon"></i>
+            {{ db.status.name }}
+        </a>
+        {% if user.is_bn and db.target_bn_id == user.osu_uid and db.status.value == 0 %}
+        <div>
+            <div class="ui two buttons">
+                <div class="ui basic green button acceptreq" data-set-id="{{ db.id }}">Accept</div>
+                <div class="ui basic red button declinereq" data-set-id="{{ db.id }}">Decline</div>
+            </div>
+        </div>
+        {% elif user.is_bn and db.target_bn_id == user.osu_uid and db.status.value == 2 %}
+        <div class="ui checkbox">
+            <input type="checkbox" id="nominate-{{ db.id }}">
+            <label>Nominating</label>
+        </div>
+        <div class="ui bottom attached button archivebtn" data-set-id="{{ db.id }}">
+            <i class="inbox icon"></i>
+            Archive Request
+        </div>
+        {% elif user.is_authenticated and db.status.value == 0 and db.requester_id == user.osu_uid %}
+        <div class="ui bottom attached button cancelbtn" data-set-id="{{ db.id }}">
+            <i class="minus icon"></i>
+            Cancel Request
+        </div>
+        {% endif %}
+    </div>
+</div>
 {% endmacro %}
 
 {% macro render_field(field, disabled=False, class=None) %}
@@ -52,17 +52,17 @@
     {{ field.label }}
     {{ field(placeholder=field.label.text, readonly=disabled, class=class) }}
     {% if field.errors %}
-        <div class="ui negative message">
-            <div class="header">
-                There is error on your input.
-            </div>
-            <ul class="list">
+    <div class="ui negative message">
+        <div class="header">
+            There is error on your input.
+        </div>
+        <ul class="list">
             {% for error in field.errors %}
-                <li>{{ error }}</li>
+            <li>{{ error }}</li>
             {% endfor %}
-            </ul>
-        </p>
-    {% endif %}
+        </ul>
+        {% endif %}
+    </div>
 </div>
 {% endmacro %}
 
@@ -73,17 +73,78 @@
         {{ field(placeholder=field.label.text) }}
         {{ field.label }}
         {% if field.errors %}
-            <div class="ui negative message">
-                <div class="header">
-                    There is error on your input.
-                </div>
-                <ul class="list">
+        <div class="ui negative message">
+            <div class="header">
+                There is error on your input.
+            </div>
+            <ul class="list">
                 {% for error in field.errors %}
-                    <li>{{ error }}</li>
+                <li>{{ error }}</li>
                 {% endfor %}
-                </ul>
+            </ul>
             </p>
-        {% endif %}
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endmacro %}
+
+{% macro create_modal(db) %}
+<div class="ui modal" id="db-{{ db.id }}">
+    <i class="close icon"></i>
+    <div class="header">
+        {{ db.song }}
+    </div>
+    <div class="content">
+        <div class="ui fluid image">
+            <img src="https://assets.ppy.sh/beatmaps/{{ db.mapset_id }}/covers/cover.jpg">
+        </div>
+        <div class="ui list">
+            <div class="item">
+                <a class="header">Mapper</a>
+                <div class="description">
+                    {{ db.mapper }}
+                </div>
+            </div>
+            <div class="item">
+                <a class="header">Requested at</a>
+                <div class="description">
+                    <time class="timeago" datetime="{{ db.requested_at.isoformat(timespec='seconds') }}Z"></time>
+                </div>
+            </div>
+            <div class="item">
+                <a class="header">Last updated</a>
+                <div class="description">
+                    {% if db.last_updated %}
+                    <time class="timeago" datetime="{{ db.last_updated.isoformat(timespec='seconds') }}Z"></time>
+                    {% else %}
+                    None
+                    {% endif %}
+                </div>
+            </div>
+            <div class="item">
+                <a class="header">Target BN</a>
+                <div class="description">
+                    {% if db.target_bn %}
+                    {{ db.target_bn.username }}
+                    {% else %}
+                    None
+                    {% endif %}
+                </div>
+            </div>
+            <div class="item">
+                <a class="header">Status</a>
+                <div class="description">
+                    {{ db.status.name | replace("_", " ") }}
+                </div>
+            </div>
+            <div class="item">
+                <a class="header">Reason</a>
+                <div class="description">
+                    {{ db.reason | nlbr }}
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 {% endmacro %}

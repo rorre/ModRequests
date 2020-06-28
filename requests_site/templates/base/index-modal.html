@@ -1,0 +1,50 @@
+{% extends "layout.html" %}
+{% import 'macros.html' as macros %}
+
+{% block content %}
+    <h2 class="ui header">
+        {{ title }}
+        {% if subtitle %}
+        <div class="sub header">{{ subtitle }}</div>
+        {% endif %}
+    </h2>
+    <div class="ui divider"></div>
+
+    {% if bns %}
+    <form id="nominator_select">
+        <span>Nominator:</span>
+        <select class="ui dropdown" name="nominator" id="selector">
+            {% for bn in bns %}
+            <option value="{{bn.osu_uid}}" {% if selected == bn.osu_uid %} selected {% endif %}>{{bn.username}}</option>
+            {% endfor %}
+        </select>
+    </form>
+    <div class="ui divider"></div>
+    {% endif %}
+
+    {% if reqs %}
+    <table class="ui celled table">
+        <thead><tr>
+            <th class="twelve wide">Song</th>
+            <th class="six wide">Action</th>
+        </tr></thead>
+        <tbody>
+            {% for db in reqs %}
+            <tr>
+                <td><a href="https://osu.ppy.sh/s/{{ db.mapset_id }}">{{ db.song }}</a></td>
+                <td>
+                    <button class="ui button showmodal" data-dbid="{{ db.id }}">
+                        Show info
+                    </button>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    {% else %}
+        No reqs available \o/
+    {% endif %}
+
+    {% for db in reqs %}
+        {{ macros.create_modal(db) }}
+    {% endfor %}
+{% endblock %}
