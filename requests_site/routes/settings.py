@@ -24,6 +24,7 @@ def index():
     form.is_closed.default = current_user.is_closed
     form.allow_multiple_reqs.default = current_user.allow_multiple_reqs
     form.rules.default = current_user.rules
+    form.show_rejected.default = current_user.show_rejected
     if form.validate_on_submit():
         current_user.is_closed = form.is_closed.data
         current_user.allow_multiple_reqs = form.allow_multiple_reqs.data

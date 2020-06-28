@@ -216,12 +216,12 @@ def archive():
         nominator_id
     )
     if show_rejected:
-        filter_op = and_(Request.status_ == 3, Request.target_bn_id == nominator_id)
-    else:
         filter_op = and_(
             or_(Request.status_ == 3, Request.status_ == 1),
             Request.target_bn_id == nominator_id,
         )
+    else:
+        filter_op = and_(Request.status_ == 3, Request.target_bn_id == nominator_id)
 
     page = request.args.get("page", 1, type=int)
     reqs = (
