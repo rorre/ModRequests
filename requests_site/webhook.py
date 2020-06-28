@@ -30,10 +30,10 @@ def send_hook(event_type, beatmap):
         try:
             result = eval(condition, {"req": beatmap})
         except:
-            return
+            continue
 
         if not result:
-            return
+            continue
 
         desc = (
             f"URL: {beatmap.link}\r\n"
@@ -50,4 +50,4 @@ def send_hook(event_type, beatmap):
             timestamp=datetime.utcnow(),
         )
 
-        send_hook_async(hook_url, event_type, embed)
+        send_hook_async(url, event_type, embed)
