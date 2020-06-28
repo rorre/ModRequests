@@ -20,21 +20,34 @@ def send_hook_async(url, event_type, embed):
 
 def send_hook(event_type, beatmap):
     app = current_app._get_current_object()
-    hook_url = app.config["DISCORD_WEBHOOK"]
+    if "DISCORD_WEBHOOKS" not in app.config:
+        return
+    hooks = app.config["DISCORD_WEBHOOKS"]
+    if not hooks:
+        return
 
-    desc = (
-        f"URL: {beatmap.link}\r\n"
-        + f"Mapper: {beatmap.mapper}\r\n"
-        + f"Requester: {beatmap.requester.username}\r\n"
-        + f"Status: {beatmap.status.name}\r\n"
-        + f"Target BN: {beatmap.target_bn.username}"
-    )
+    for condition, url in hooks.items():
+        try:
+            result = eval(condition, {"req": beatmap})
+        except:
+            return
 
-    embed = discord.Embed(
-        title=f"{beatmap.song}",
-        colour=colors.get(beatmap.status_, discord.Colour(0x4A90E2)),
-        description=desc,
-        timestamp=datetime.utcnow(),
-    )
+        if not result:
+            return
 
-    send_hook_async(hook_url, event_type, embed)
+        desc = (
+            f"URL: {beatmap.link}\r\n"
+            + f"Mapper: {beatmap.mapper}\r\n"
+            + f"Requester: {beatmap.requester.username}\r\n"
+            + f"Status: {beatmap.status.name}\r\n"
+            + f"Target BN: {beatmap.target_bn.username}"
+        )
+
+        embed = discord.Embed(
+            title=f"{beatmap.song}",
+            colour=colors.get(beatmap.status_, discord.Colour(0x4A90E2)),
+            description=desc,
+            timestamp=datetime.utcnow(),
+        )
+
+        send_hook_async(hook_url, event_type, embed)
