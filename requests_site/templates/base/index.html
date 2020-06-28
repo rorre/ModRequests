@@ -4,6 +4,9 @@
 {% block content %}
     <h2 class="ui header">
         {{ title }}
+        {% if count %}
+        <div class="ui circular label">{{ count }}</div>
+        {% endif %}
         {% if subtitle %}
         <div class="sub header">{{ subtitle }}</div>
         {% endif %}
