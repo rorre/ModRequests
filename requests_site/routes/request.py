@@ -212,9 +212,8 @@ def archive():
     nominator_id = request.args.get(
         "nominator", current_app.config["DEFAULT_NOMINATOR"], type=int
     )
-    show_rejected = User.query.options(load_only("show_rejected")).get_or_404(
-        nominator_id
-    )
+    nominator = User.query.options(load_only("show_rejected")).get_or_404(nominator_id)
+    show_rejected = nominator.show_rejected
     if show_rejected:
         filter_op = and_(
             or_(Request.status_ == 3, Request.status_ == 1),
