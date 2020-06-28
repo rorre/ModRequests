@@ -40,10 +40,11 @@
             </tr>
             {% endfor %}
         </tbody>
+    </table>
 
-        {% for db in reqs %}
-            {{ macros.create_modal(db) }}
-        {% endfor %}
+    {% for db in reqs %}
+        {{ macros.create_modal(db) }}
+    {% endfor %}
     {% else %}
         No reqs available \o/
     {% endif %}
