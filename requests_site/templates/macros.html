@@ -89,59 +89,70 @@
 </div>
 {% endmacro %}
 
+{% macro render_item(header, description, timeago=False) %}
+<div class="item">
+    <a class="header">{{ header }}</a>
+    <div class="description">
+        {% if timeago %}
+            <time class="timeago" datetime="{{ description }}Z"></time>
+        {% else %}
+            {{ description }}
+        {% endif %}
+    </div>
+</div>
+{% endmacro %}
+
 {% macro create_modal(db) %}
 <div class="ui modal" id="db-{{ db.id }}">
     <i class="close icon"></i>
     <div class="header">
-        {{ db.song }}
+        <a href="https://osu.ppy.sh/s/{{ db.mapset_id }}">{{ db.song }}</a>
     </div>
     <div class="content">
-        <div class="ui fluid image">
-            <img src="https://assets.ppy.sh/beatmaps/{{ db.mapset_id }}/covers/cover.jpg">
+        <div class="ui segment">
+            <div class="ui fluid image">
+                <img src="https://assets.ppy.sh/beatmaps/{{ db.mapset_id }}/covers/cover.jpg">
+            </div>
         </div>
-        <div class="ui list">
-            <div class="item">
-                <a class="header">Mapper</a>
-                <div class="description">
-                    {{ db.mapper }}
-                </div>
+        <div class="ui segment">
+            <div class="ui icon header center aligned">
+                {% if db.status_ == 1 %}
+                <i class="times icon"></i>
+                {% elif db.status_ == 2 or db.statis_ == 5%}
+                <i class="check icon"></i>
+                {% elif db.status_ == 3 %}
+                <i class="archive icon"></i>
+                {% else %}
+                <i class="ellipsis horizontal icon"></i>
+                {% endif %}
+                Your request request status is "{{ db.status.name | replace("_", " ") }}".
             </div>
-            <div class="item">
-                <a class="header">Requested at</a>
-                <div class="description">
-                    <time class="timeago" datetime="{{ db.requested_at.isoformat(timespec='seconds') }}Z"></time>
-                </div>
-            </div>
-            <div class="item">
-                <a class="header">Last updated</a>
-                <div class="description">
+        </div>
+        <div class="ui segment">
+            <div class="ui two columns stackable grid">
+                <div class="column">
+                    {{ render_item("Mapper", db.mapper) }}
+                    {{ render_item("Requested at", db.requested_at.isoformat(timespec='seconds'))}}
                     {% if db.last_updated %}
-                    <time class="timeago" datetime="{{ db.last_updated.isoformat(timespec='seconds') }}Z"></time>
+                        {{ render_item("Last updated", db.last_updated.isoformat(timespec='seconds')) }}
                     {% else %}
-                    None
+                        {{ render_item("Last updated", "None") }}
                     {% endif %}
-                </div>
-            </div>
-            <div class="item">
-                <a class="header">Target BN</a>
-                <div class="description">
                     {% if db.target_bn %}
-                    {{ db.target_bn.username }}
+                        {{ render_item("Target BN", db.target_bn.username) }}
                     {% else %}
-                    None
+                        {{ render_item("Target BN", "None") }}
                     {% endif %}
                 </div>
-            </div>
-            <div class="item">
-                <a class="header">Status</a>
-                <div class="description">
-                    {{ db.status.name | replace("_", " ") }}
-                </div>
-            </div>
-            <div class="item">
-                <a class="header">Reason</a>
-                <div class="description">
-                    {{ db.reason | nlbr }}
+                <div class="column">
+                    {% if db.status_ == 1 %}
+                    <div class="item">
+                        <a class="header">Reason</a>
+                        <div class="description">
+                            {{ db.reason | nlbr }}
+                        </div>
+                    </div>
+                    {% endif %}
                 </div>
             </div>
         </div>
