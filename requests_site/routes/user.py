@@ -1,4 +1,4 @@
-from flask import Blueprint, redirect, url_for
+from flask import Blueprint, redirect, url_for, session
 from flask_login import current_user, login_required, login_user, logout_user
 
 from requests_site.models import User, db
@@ -44,5 +44,6 @@ def authorize():
     db.session.add(this_user)
     db.session.commit()
     login_user(this_user)
+    session.permanent = True
 
     return redirect(url_for("base.index"))
