@@ -1,4 +1,4 @@
-$(document).ready(function() {
+$(document).ready(function () {
     $("time.timeago").timeago();
 });
 
@@ -20,5 +20,10 @@ $('.ui.search').search({
     apiSettings: {
         url: '/request/search/{query}'
     },
-    minCharacters : 3
+    minCharacters: 3
+})
+
+$('.ui.dropdown').dropdown()
+$('#selector').change(function () {
+    $("#nominator_select").submit()
 })

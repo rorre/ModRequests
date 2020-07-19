@@ -2,19 +2,19 @@
 <html lang="en">
     <head>
         <meta charset="utf-8" />
-        <title>Ren's Requests</title>
+        <title>BN Requests</title>
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-        <meta name="title" content="Ren's Requests">
+        <meta name="title" content="BN Requests">
         <meta name="description" content="BN mod requests site for -Keitaro on osu!.">
 
         <meta property="og:type" content="website">
         <meta property="og:url" content="https://bn.rorre.xyz/">
-        <meta property="og:title" content="Ren's Requests">
+        <meta property="og:title" content="BN Requests">
         <meta property="og:description" content="BN mod requests site for -Keitaro on osu!.">
 
         <meta property="twitter:card" content="summary_large_image">
         <meta property="twitter:url" content="https://bn.rorre.xyz/">
-        <meta property="twitter:title" content="Ren's Requests">
+        <meta property="twitter:title" content="BN Requests">
         <meta property="twitter:description" content="BN mod requests site for -Keitaro on osu!.">
         <script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script>
         <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/fomantic-ui@2.8.4/dist/semantic.min.css">
@@ -37,24 +37,40 @@
     <body>
         <div class="ui stackable inverted menu">
             <div class="ui container">
-                <a href="{{ url_for('base.index') }}" class="header item">Ren's Requests</a>
-                <a href="{{ url_for('request.accepted') }}" class="item">Accepted Requests</a>
-                <a href="{{ url_for('request.archive') }}" class="item">Archive</a>
+                <a href="{{ url_for('base.index') }}" class="header item">BN Requests</a>
+                <div class="ui simple dropdown item">
+                    Requests <i class="dropdown icon"></i>
+                    <div class="menu">
+                        <a href="{{ url_for('request.accepted') }}" class="item">Accepted</a>
+                        <a href="{{ url_for('request.archive') }}" class="item">Archive</a>
+                        {% if current_user.is_authenticated %}
+                        <a href="{{ url_for('request.mine') }}" class="item">Mine</a>
+                        {% endif %}
+                    </div>
+                </div>
+                <a href="{{ url_for('request.nominations') }}" class="item">Nominations</a>
+
                 {% if current_user.is_authenticated %}
-                    <a href="{{ url_for('request.mine') }}" class="item">My Requests</a>
                     <a href="{{ url_for('request.create') }}" class="item">Request Mod</a>
                     <a href="{{ url_for('user.logout') }}" class="item">Logout</a>
-                    <div class="right menu">
-                        <div class="ui right aligned category search item">
-                            <div class="ui icon input">
-                                <input class="prompt" type="text" placeholder="Search">
-                                <i class="search link icon"></i>
-                            </div>
-                        </div>
-                    </div>
                 {% else %}
                     <a href="{{ url_for('user.login') }}" class="item">Login</a>
                 {% endif %}
+
+                {% if current_user.is_bn %}
+                    <a href="{{ url_for('settings.index') }}" class="item">Settings</a>
+                {% endif %}
+
+                <a href="{{ url_for('base.support') }}" class="item">Support</a>
+
+                <div class="right menu">
+                    <div class="ui right aligned category search item">
+                        <div class="ui icon input">
+                            <input class="prompt" type="text" placeholder="Search">
+                            <i class="search link icon"></i>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
 

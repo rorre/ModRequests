@@ -14,6 +14,7 @@ def create_app(config_file="config.json"):
     if "SENTRY_URL" in data:
         import sentry_sdk
         from sentry_sdk.integrations.flask import FlaskIntegration
+
         sentry_sdk.init(dsn=data["SENTRY_URL"], integrations=[FlaskIntegration()])
 
     app = Flask(__name__, static_url_path="", static_folder="public")
@@ -36,18 +37,19 @@ def create_app(config_file="config.json"):
     init_oauth(app, oauth)
     db.init_app(app)
     login_manager.init_app(app)
-    migrate.init_app(app, db)
+    migrate.init_app(app, db, render_as_batch=True)
     bundler.init_app(app)
     app.jinja_env.filters["nlbr"] = nl2br
 
     admin.add_view(AdminView(User, db.session, endpoint="/user"))
     admin.add_view(AdminView(Request, db.session, endpoint="/req"))
 
-    from requests_site.routes import base, request, user
+    from requests_site.routes import base, request, user, settings
 
     app.register_blueprint(base.blueprint)
     app.register_blueprint(request.blueprint)
     app.register_blueprint(user.blueprint)
+    app.register_blueprint(settings.blueprint)
 
     @app.before_first_request
     def init_db():

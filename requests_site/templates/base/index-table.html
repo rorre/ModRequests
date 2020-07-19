@@ -10,15 +10,27 @@
     </h2>
     <div class="ui divider"></div>
 
+    {% if bns %}
+    <form id="nominator_select">
+        <span>Nominator:</span>
+        <select class="ui dropdown" name="nominator" id="selector">
+            {% for bn in bns %}
+            <option value="{{bn.osu_uid}}" {% if selected == bn.osu_uid %} selected {% endif %}>{{bn.username}}</option>
+            {% endfor %}
+        </select>
+    </form>
+    <div class="ui divider"></div>
+    {% endif %}
+
     {% if reqs %}
     <table class="ui celled table">
         <thead><tr>
             <th class="three wide">Song</th>
             <th class="three wide">Mapper</th>
-            <th class="two wide">Requested at</th>
-            <th class="two wide">Last Updated</th>
-            <th class="two wide">Status</th>
-            <th class="four wide">Reason</th>
+            <th class="three wide">Requested at</th>
+            <th class="three wide">Last Updated</th>
+            <th class="three wide">Requested to</th>
+            <th class="three wide">Status</th>
         </tr></thead>
         <tbody>
             {% for db in reqs %}
@@ -26,13 +38,24 @@
                     <td><a href="https://osu.ppy.sh/s/{{ db.mapset_id }}">{{ db.song }}</a></td>
                     <td>{{ db.mapper }}</td>
                     <td><time class="timeago" datetime="{{ db.requested_at.isoformat(timespec='seconds') }}Z"></time></td>
+                    
                     {% if db.last_updated %}
-                    <td><time class="timeago" datetime="{{ db.last_updated.isoformat(timespec='seconds') }}Z"></time></td>
+                        <td><time class="timeago" datetime="{{ db.last_updated.isoformat(timespec='seconds') }}Z"></time></td>
                     {% else %}
-                    <td>None</td>
+                        <td>None</td>
                     {% endif %}
-                    <td>{{ db.status.name }}</td>
-                    <td>{{ db.reason | nlbr }}</td>
+
+                    {% if db.target_bn %}
+                        <td>{{ db.target_bn.username }}</td>
+                    {% else %}
+                        <td>None</td>
+                    {% endif %}
+
+                    <td>{{ db.status.name | replace("_", " ") }}
+                    {% if db.status_ == 4 and current_user.is_bn and db.target_bn_id == current_user.osu_uid %}
+                        <div class="ui green button nominatedbtn" data-set-id="{{ db.id }}">Mark as Nominated</div>
+                    {% endif %}
+                    </td>
                 </tr>
             {% endfor %}
         </tbody>

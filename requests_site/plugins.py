@@ -1,17 +1,29 @@
 import re
 
+import mistune
+
 from authlib.integrations.flask_client import OAuth
 from flask_admin import Admin
+from flask_assets import Bundle, Environment
 from flask_login import LoginManager
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
-from flask_assets import Environment, Bundle
-from jinja2 import evalcontextfilter, Markup, escape
+from jinja2 import Markup, escape, evalcontextfilter
+from sqlalchemy import MetaData
 
-db = SQLAlchemy()
+naming_convention = {
+    "ix": "ix_%(column_0_label)s",
+    "uq": "uq_%(table_name)s_%(column_0_name)s",
+    "ck": "ck_%(table_name)s_%(column_0_name)s",
+    "fk": "fk_%(table_name)s_%(column_0_name)s_%(referred_table_name)s",
+    "pk": "pk_%(table_name)s",
+}
+
+db = SQLAlchemy(metadata=MetaData(naming_convention=naming_convention))
+md = mistune.Markdown()
 login_manager = LoginManager()
 oauth = OAuth()
-admin = Admin(name="Ren's Requests")
+admin = Admin(name="BN Requests")
 migrate = Migrate()
 bundler = Environment()
 

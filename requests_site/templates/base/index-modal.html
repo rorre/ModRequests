@@ -4,17 +4,13 @@
 {% block content %}
     <h2 class="ui header">
         {{ title }}
-        {% if count %}
-        <div class="ui circular label">{{ count }}</div>
-        {% endif %}
         {% if subtitle %}
         <div class="sub header">{{ subtitle }}</div>
         {% endif %}
     </h2>
-
     <div class="ui divider"></div>
-    <div class="ui hidden negative message" id="err"></div>
 
+    {% if bns %}
     <form id="nominator_select">
         <span>Nominator:</span>
         <select class="ui dropdown" name="nominator" id="selector">
@@ -24,13 +20,31 @@
         </select>
     </form>
     <div class="ui divider"></div>
-    
+    {% endif %}
+
     {% if reqs %}
-        <div class="ui centered doubling cards">
+    <table class="ui celled table">
+        <thead><tr>
+            <th class="twelve wide">Song</th>
+            <th class="six wide">Action</th>
+        </tr></thead>
+        <tbody>
             {% for db in reqs %}
-                {{ macros.card(db, current_user, show_last_update) }}
+            <tr>
+                <td><a href="https://osu.ppy.sh/s/{{ db.mapset_id }}">{{ db.song }}</a></td>
+                <td>
+                    <button class="ui button showmodal" data-dbid="{{ db.id }}">
+                        Show info
+                    </button>
+                </td>
+            </tr>
             {% endfor %}
-        </div>
+        </tbody>
+    </table>
+
+    {% for db in reqs %}
+        {{ macros.create_modal(db) }}
+    {% endfor %}
     {% else %}
         No reqs available \o/
     {% endif %}

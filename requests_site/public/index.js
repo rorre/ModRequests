@@ -28,3 +28,9 @@ $(".cancelbtn").click(function (e) {
 $(".reason").popup({
     on: 'hover'
 });
+
+$(".showmodal").click(function () {
+    $this = $(this)
+    const dbid = $this.data("dbid")
+    $("#db-" + dbid).modal("show")
+})

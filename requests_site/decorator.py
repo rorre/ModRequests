@@ -5,10 +5,10 @@ from flask import abort
 from flask_login import current_user
 
 
-def admin_only(func):
+def bn_only(func):
     @wraps(func)
     def wrapper(*args, **kwargs):
-        if not (current_user.is_authenticated and current_user.is_admin):
+        if not (current_user.is_authenticated and current_user.is_bn):
             abort(403)
         return func(*args, **kwargs)
 

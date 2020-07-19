@@ -11,14 +11,9 @@
         Things to keep in mind:
     </div>
     <ul class="list">
-        <li>Look at <a href="https://osu.ppy.sh/users/3378391">my rules on my userpage</a>. I won't be listing them again here.</li>
-        <li>If I have picked one of your map, then the chance is that I will not look at another map you send in a short matter of time. Give others a chance.</li>
-        <li>No duplicates. The chances are I might reject again. Though you can still send it again if you're persistent.</li>
         <li>You only need to link your map, rest of the form will be filled automatically.</li>
         <li>If the rest of the form hasnt filled, then please do not submit. It will just fails.</li>
         <li>If the form doesnt want to load, try removing the last character from the url field and put it again.</li>
-        <li>It will take up to 2 weeks for me to respond to all reqs, if I exceed that deadline, your request will be auto-denied. But don't fret! You can request the map again next time. Think of it like you aren't picked from modding queue because the queue owner already took enough reqs.</li>
-        <li>If your request get accepted, you will receive a forum PM (osu!) from me that your request is accepted.</li>
     </ul>
 </div>
 
@@ -30,6 +25,8 @@
     {{ macros.render_field(form.song, disabled=True) }}
     {{ macros.render_field(form.mapset_id, disabled=True) }}
     {{ macros.render_field(form.mapper, disabled=True) }}
+    {{ macros.render_field(form.target_bn, class="ui dropdown") }}
+    <div class="field" id="bn_rules"></div>
     {{ form.submit(class_="ui button") }}
 </form>
 {% endblock %}

@@ -1,7 +1,7 @@
 from datetime import datetime
 
 import discord
-from discord import Webhook, RequestsWebhookAdapter
+from discord import RequestsWebhookAdapter, Webhook
 from flask import current_app
 
 from requests_site.decorator import run_async
@@ -9,8 +9,6 @@ from requests_site.decorator import run_async
 colors = {
     0: discord.Colour(0xE29519),
     1: discord.Colour(0xA82033),
-    2: discord.Colour(0x4A90E2),
-    3: discord.Colour(0x4A90E2),
 }
 
 
@@ -22,20 +20,34 @@ def send_hook_async(url, event_type, embed):
 
 def send_hook(event_type, beatmap):
     app = current_app._get_current_object()
-    hook_url = app.config["DISCORD_WEBHOOK"]
+    if "DISCORD_WEBHOOKS" not in app.config:
+        return
+    hooks = app.config["DISCORD_WEBHOOKS"]
+    if not hooks:
+        return
 
-    desc = (
-        f"URL: {beatmap.link}\r\n"
-        + f"Mapper: {beatmap.mapper}\r\n"
-        + f"Requester: {beatmap.requester.username}\r\n"
-        + f"Status: {beatmap.status.name}"
-    )
+    for condition, url in hooks.items():
+        try:
+            result = eval(condition, {"req": beatmap})
+        except:
+            continue
 
-    embed = discord.Embed(
-        title=f"{beatmap.song}",
-        colour=colors.get(beatmap.status_),
-        description=desc,
-        timestamp=datetime.utcnow(),
-    )
+        if not result:
+            continue
 
-    send_hook_async(hook_url, event_type, embed)
+        desc = (
+            f"URL: {beatmap.link}\r\n"
+            + f"Mapper: {beatmap.mapper}\r\n"
+            + f"Requester: {beatmap.requester.username}\r\n"
+            + f"Status: {beatmap.status.name}\r\n"
+            + f"Target BN: {beatmap.target_bn.username}"
+        )
+
+        embed = discord.Embed(
+            title=f"{beatmap.song}",
+            colour=colors.get(beatmap.status_, discord.Colour(0x4A90E2)),
+            description=desc,
+            timestamp=datetime.utcnow(),
+        )
+
+        send_hook_async(url, event_type, embed)

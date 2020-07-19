@@ -3,7 +3,7 @@ $(".acceptreq").click(function (e) {
     $this = $(this)
 
     const set_id = $this.data("set-id")
-    axios.post("/request/" + set_id, {"status_": 2}).then((e) => {
+    axios.post("/request/" + set_id, { "status_": 2 }).then((e) => {
         var $parent = $($this.parents()[1])
         $parent.hide()
         $parent.siblings("a").contents().last().replaceWith("Accepted")
@@ -19,7 +19,7 @@ $(".declinereq").click(function (e) {
     $($this.parents()[1]).append(appended)
     $("#rejbtn-" + set_id).click((e) => {
         e.preventDefault()
-        axios.post("/request/" + set_id, {"status_": 1, "archive": true, "reason": $(`#reason-${set_id}`).val()}).then((e) => {
+        axios.post("/request/" + set_id, { "status_": 1, "archive": true, "reason": $(`#reason-${set_id}`).val() }).then((e) => {
             var $parent = $($this.parents()[1])
             $parent.hide()
             $parent.siblings("a").contents().last().replaceWith("Declined")
@@ -29,6 +29,16 @@ $(".declinereq").click(function (e) {
 
 $(".archivebtn").click(function (e) {
     const set_id = $(this).data("set-id")
+    const checkbox_val = $("#nominate-" + set_id).prop('checked')
+    var status, archive;
+    if (checkbox_val) {
+        status = 4
+        archive = false
+    } else {
+        status = 3
+        archive = true
+    }
+
     $('body').toast({
         message: 'Are you sure you want to archive?',
         displayTime: 0,
@@ -39,7 +49,7 @@ $(".archivebtn").click(function (e) {
                 class: "green",
                 click: () => {
                     $('body').toast({ message: "Archiving..." })
-                    axios.post("/request/" + set_id, {"status_": 3, "archive": true}).then((e) => {
+                    axios.post("/request/" + set_id, { "status_": status, "archive": archive }).then((e) => {
                         $($(this).parents()[1]).remove()
                         $('body').toast({ message: "Done!" })
                     }).catch(handle_error)
@@ -52,4 +62,13 @@ $(".archivebtn").click(function (e) {
             }
         ]
     })
+})
+
+$(".nominatedbtn").click(function (e) {
+    const set_id = $(this).data("set-id")
+    $('body').toast({ message: "Marking..." })
+    axios.post("/request/" + set_id, { "status_": 5, "archive": true }).then((e) => {
+        $('body').toast({ message: "Done!" })
+        location.reload()
+    }).catch(handle_error)
 })
