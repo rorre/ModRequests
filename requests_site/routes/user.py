@@ -1,4 +1,4 @@
-from flask import Blueprint, redirect, url_for, session
+from flask import Blueprint, flash, redirect, url_for, session
 from flask_login import current_user, login_required, login_user, logout_user
 
 from requests_site.models import User, db
@@ -28,6 +28,7 @@ def authorize():
     try:
         token = oauth.osu.authorize_access_token()
     except:
+        flash("An error has occured.", "error")
         return redirect(url_for("base.index"))
     resp = oauth.osu.get("me", token=token)
     profile = resp.json()

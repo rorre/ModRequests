@@ -1,54 +1,72 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="utf-8" />
-        <title>BN Requests</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-        <meta name="title" content="BN Requests">
-        <meta name="description" content="BN mod requests site for -Keitaro on osu!.">
+<head>
+    <meta charset="utf-8" />
+    <title>BN Requests</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-        <meta property="og:type" content="website">
-        <meta property="og:url" content="https://bn.rorre.xyz/">
-        <meta property="og:title" content="BN Requests">
-        <meta property="og:description" content="BN mod requests site for -Keitaro on osu!.">
+    <meta name="title" content="BN Requests">
+    <meta name="description" content="BN mod requests site for -Keitaro on osu!.">
 
-        <meta property="twitter:card" content="summary_large_image">
-        <meta property="twitter:url" content="https://bn.rorre.xyz/">
-        <meta property="twitter:title" content="BN Requests">
-        <meta property="twitter:description" content="BN mod requests site for -Keitaro on osu!.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://bn.rorre.xyz/">
+    <meta property="og:title" content="BN Requests">
+    <meta property="og:description" content="BN mod requests site for -Keitaro on osu!.">
 
-        <script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script>
-        <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/fomantic-ui@2.8.4/dist/semantic.min.css">
-        <script src="https://cdn.jsdelivr.net/npm/fomantic-ui@2.8.4/dist/semantic.min.js"></script>
-        <style type="text/css">
-            body {
-              background-color: #DADADA;
-            }
-            body > .grid {
-              height: 100%;
-            }
-            .image {
-              margin-top: -100px;
-            }
-            .column {
-              max-width: 450px;
-            }
-        </style>
-    </head>
-    <body>
-        <div class="ui middle aligned center aligned grid">
-            <div class="column">
-                <div class="ui placeholder segment">
-                    <div class="ui icon header">
-                        <i class="sign in alternate icon"></i>
-                        You need to be logged in to proceed.
-                    </div>
-                    <a href="{{ url_for('user.login') }}" class="ui primary button">
-                        Log-in with osu!
-                    </a>
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://bn.rorre.xyz/">
+    <meta property="twitter:title" content="BN Requests">
+    <meta property="twitter:description" content="BN mod requests site for -Keitaro on osu!.">
+
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/fomantic-ui@2.8.4/dist/semantic.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/fomantic-ui@2.8.4/dist/semantic.min.js"></script>
+    <style type="text/css">
+        body {
+            background-color: #DADADA;
+        }
+
+        body>.grid {
+            height: 100%;
+        }
+
+        .image {
+            margin-top: -100px;
+        }
+
+        .column {
+            max-width: 450px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="ui middle aligned center aligned grid">
+        <div class="column">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+
+            {% for category, message in messages %}
+            <div class="ui {{ category }} message">
+                {{ message }}
+            </div>
+            {% endfor %}
+
+            {% endif %}
+            {% endwith %}
+            <div class="ui placeholder segment">
+                <div class="ui icon header">
+                    <i class="sign in alternate icon"></i>
+                    You need to be logged in to proceed.
                 </div>
+                <a href="{{ url_for('user.login') }}" class="ui primary button">
+                    Log-in with osu!
+                </a>
+                <a href="{{ url_for('request.listing') }}">...or don't, thats ok too.</a>
             </div>
         </div>
-    </body>
+    </div>
+</body>
+
 </html>

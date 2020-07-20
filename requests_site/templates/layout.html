@@ -1,110 +1,115 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="utf-8" />
-        <title>BN Requests</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-        <meta name="title" content="BN Requests">
-        <meta name="description" content="BN mod requests site for -Keitaro on osu!.">
 
-        <meta property="og:type" content="website">
-        <meta property="og:url" content="https://bn.rorre.xyz/">
-        <meta property="og:title" content="BN Requests">
-        <meta property="og:description" content="BN mod requests site for -Keitaro on osu!.">
+<head>
+    <meta charset="utf-8" />
+    <title>BN Requests</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="title" content="BN Requests">
+    <meta name="description" content="BN mod requests site for -Keitaro on osu!.">
 
-        <meta property="twitter:card" content="summary_large_image">
-        <meta property="twitter:url" content="https://bn.rorre.xyz/">
-        <meta property="twitter:title" content="BN Requests">
-        <meta property="twitter:description" content="BN mod requests site for -Keitaro on osu!.">
-        <script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script>
-        <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/fomantic-ui@2.8.4/dist/semantic.min.css">
-        <script src="https://cdn.jsdelivr.net/npm/fomantic-ui@2.8.4/dist/semantic.min.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-        <script src="https://timeago.yarp.com/jquery.timeago.js"></script>
-        <style type="text/css">
-            body {
-              background-color: #FFFFFF;
-            }
-            .ui.menu .item img.logo {
-              margin-right: 1.5em;
-            }
-            .main.container {
-              margin-left: 1.5em;
-              margin-top: 7em;
-            }
-        </style>
-    </head>
-    <body>
-        <div class="ui stackable inverted menu">
-            <div class="ui container">
-                <a href="{{ url_for('base.index') }}" class="header item">BN Requests</a>
-                <div class="ui simple dropdown item">
-                    Requests <i class="dropdown icon"></i>
-                    <div class="menu">
-                        <a href="{{ url_for('request.accepted') }}" class="item">Accepted</a>
-                        <a href="{{ url_for('request.archive') }}" class="item">Archive</a>
-                        {% if current_user.is_authenticated %}
-                        <a href="{{ url_for('request.mine') }}" class="item">Mine</a>
-                        {% endif %}
-                    </div>
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://bn.rorre.xyz/">
+    <meta property="og:title" content="BN Requests">
+    <meta property="og:description" content="BN mod requests site for -Keitaro on osu!.">
+
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://bn.rorre.xyz/">
+    <meta property="twitter:title" content="BN Requests">
+    <meta property="twitter:description" content="BN mod requests site for -Keitaro on osu!.">
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/fomantic-ui@2.8.4/dist/semantic.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/fomantic-ui@2.8.4/dist/semantic.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="https://timeago.yarp.com/jquery.timeago.js"></script>
+    <style type="text/css">
+        body {
+            background-color: #FFFFFF;
+        }
+
+        .ui.menu .item img.logo {
+            margin-right: 1.5em;
+        }
+
+        .main.container {
+            margin-left: 1.5em;
+            margin-top: 7em;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="ui stackable inverted menu">
+        <div class="ui container">
+            <a href="{{ url_for('base.index') }}" class="header item">BN Requests</a>
+            <div class="ui simple dropdown item">
+                Requests <i class="dropdown icon"></i>
+                <div class="menu">
+                    <a href="{{ url_for('request.accepted') }}" class="item">Accepted</a>
+                    <a href="{{ url_for('request.archive') }}" class="item">Archive</a>
+                    {% if current_user.is_authenticated %}
+                    <a href="{{ url_for('request.mine') }}" class="item">Mine</a>
+                    {% endif %}
                 </div>
-                <a href="{{ url_for('request.nominations') }}" class="item">Nominations</a>
+            </div>
+            <a href="{{ url_for('request.nominations') }}" class="item">Nominations</a>
 
-                {% if current_user.is_authenticated %}
-                    <a href="{{ url_for('request.create') }}" class="item">Request Mod</a>
-                    <a href="{{ url_for('user.logout') }}" class="item">Logout</a>
-                {% else %}
-                    <a href="{{ url_for('user.login') }}" class="item">Login</a>
-                {% endif %}
+            {% if current_user.is_authenticated %}
+            <a href="{{ url_for('request.create') }}" class="item">Request Mod</a>
+            <a href="{{ url_for('user.logout') }}" class="item">Logout</a>
+            {% else %}
+            <a href="{{ url_for('user.login') }}" class="item">Login</a>
+            {% endif %}
 
-                {% if current_user.is_bn %}
-                    <a href="{{ url_for('settings.index') }}" class="item">Settings</a>
-                {% endif %}
+            {% if current_user.is_bn %}
+            <a href="{{ url_for('settings.index') }}" class="item">Settings</a>
+            {% endif %}
 
-                <a href="{{ url_for('base.support') }}" class="item">Support</a>
+            <a href="{{ url_for('base.support') }}" class="item">Support</a>
 
-                <div class="right menu">
-                    <div class="ui right aligned category search item">
-                        <div class="ui icon input">
-                            <input class="prompt" type="text" placeholder="Search">
-                            <i class="search link icon"></i>
-                        </div>
+            <div class="right menu">
+                <div class="ui right aligned category search item">
+                    <div class="ui icon input">
+                        <input class="prompt" type="text" placeholder="Search">
+                        <i class="search link icon"></i>
                     </div>
                 </div>
             </div>
         </div>
+    </div>
 
-        <div class="ui main container">
-            {% with messages = get_flashed_messages(with_categories=true) %}
-            {% if messages %}
-                
-                {% for category, message in messages %}
-                <div class="ui {{ category }} message">
-                        {{ message }}
-                </div>
-                {% endfor %}
+    <div class="ui main container">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+
+        {% for category, message in messages %}
+        <div class="ui {{ category }} message">
+            {{ message }}
+        </div>
+        {% endfor %}
+
+        {% endif %}
+        {% endwith %}
+
+        {% block content %}{% endblock %}
+
+        <br><br>
+
+        <div class="ui aligned grid">
+            {% if prev_url %}
+            <div class="left floated six wide column">
+                <a class="ui labeled icon button" href="{{ prev_url }}">
+                    <i class="left arrow icon"></i>
+                    Previous
+                </a>
+            </div>
             {% endif %}
-            {% endwith %}
 
-            {% block content %}{% endblock %}
-
-            <br><br>
-
-            <div class="ui aligned grid">
-                {% if prev_url %}
-                <div class="left floated six wide column">
-                    <a class="ui labeled icon button" href="{{ prev_url }}">
-                        <i class="left arrow icon"></i>
-                        Previous
-                    </a>
-                </div>
-                {% endif %}
-
-                {% if next_url %}
-                    {% if prev_url %}
-                        <div class="right aligned six wide column">
-                    {% else %}
-                        <div class="right aligned column">
+            {% if next_url %}
+            {% if prev_url %}
+            <div class="right aligned six wide column">
+                {% else %}
+                <div class="right aligned column">
                     {% endif %}
                     <a class="ui right labeled icon button" href="{{ next_url }}">
                         <i class="right arrow icon"></i>
@@ -115,7 +120,8 @@
             </div>
         </div>
         {% assets "js_all" %}
-            <script src="{{ ASSET_URL }}"></script>
+        <script src="{{ ASSET_URL }}"></script>
         {% endassets %}
-    </body>
+</body>
+
 </html>
