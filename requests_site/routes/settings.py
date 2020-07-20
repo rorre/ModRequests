@@ -12,7 +12,7 @@ blueprint = Blueprint("settings", __name__, url_prefix="/settings")
 class SettingsForm(FlaskForm):
     is_closed = BooleanField("Closed")
     allow_multiple_reqs = BooleanField("Allow multiple reqs")
-    show_rejected = BooleanField("Show rejected maps in Archive")
+    show_rejected = BooleanField("Show rejected maps")
     rules = TextAreaField("Rules")
     submit = SubmitField("Save")
 

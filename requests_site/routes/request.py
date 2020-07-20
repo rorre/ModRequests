@@ -34,6 +34,10 @@ def get_bn():
     bns = User.query.filter_by(is_bn=True).all()
 
 
+class MockSQLResult:
+    items = []
+
+
 class NewRequestForm(FlaskForm):
     link = URLField("Mapset URL", validators=[Required()])
     song = TextField("Artist - Title", validators=[Required()])
@@ -213,14 +217,7 @@ def archive():
         "nominator", current_app.config["DEFAULT_NOMINATOR"], type=int
     )
     nominator = User.query.options(load_only("show_rejected")).get_or_404(nominator_id)
-    show_rejected = nominator.show_rejected
-    if show_rejected:
-        filter_op = and_(
-            or_(Request.status_ == 3, Request.status_ == 1),
-            Request.target_bn_id == nominator_id,
-        )
-    else:
-        filter_op = and_(Request.status_ == 3, Request.target_bn_id == nominator_id)
+    filter_op = and_(Request.status_ == 3, Request.target_bn_id == nominator_id)
 
     page = request.args.get("page", 1, type=int)
     reqs = (
@@ -244,6 +241,49 @@ def archive():
         reqs=reqs.items,
         title="Archived requests",
         subtitle="All of the requests that is already done.",
+        scripts=["admin.js", "index.js"],
+        next_url=next_url,
+        prev_url=prev_url,
+        bns=bns,
+        selected=nominator_id,
+    )
+
+
+@blueprint.route("/list/rejected")
+def rejected():
+    nominator_id = request.args.get(
+        "nominator", current_app.config["DEFAULT_NOMINATOR"], type=int
+    )
+    nominator = User.query.options(load_only("show_rejected")).get_or_404(nominator_id)
+    show_rejected = nominator.show_rejected
+    if show_rejected:
+        filter_op = and_(Request.status_ == 1, Request.target_bn_id == nominator_id)
+        page = request.args.get("page", 1, type=int)
+        reqs = (
+            Request.query.filter(filter_op)
+            .order_by(Request.requested_at.desc())
+            .paginate(page, 10, False)
+        )
+        next_url = (
+            url_for("request.rejected", nominator=nominator_id, page=reqs.next_num)
+            if reqs.has_next
+            else None
+        )
+        prev_url = (
+            url_for("request.rejected", nominator=nominator_id, page=reqs.prev_num)
+            if reqs.has_prev
+            else None
+        )
+    else:
+        reqs = MockSQLResult()
+        next_url = None
+        prev_url = None
+
+    return render_template(
+        "base/index-modal.html",
+        reqs=reqs.items,
+        title="Rejected requests",
+        subtitle="All of poor requests belong here.",
         scripts=["admin.js", "index.js"],
         next_url=next_url,
         prev_url=prev_url,
