@@ -38,6 +38,9 @@ class User(db.Model):
     show_rejected = db.Column(db.Boolean, default=False)
     rules = db.Column(db.Text, default="No rules provided, maybe check their userpage.")
 
+    show_notice = db.Column(db.Boolean, default=False)
+    notice = db.Column(db.Text)
+
     @staticmethod
     @login_manager.user_loader
     def load_user(osu_uid):
