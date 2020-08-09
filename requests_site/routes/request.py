@@ -25,13 +25,6 @@ from requests_site.models import Request, Status, User, db
 from requests_site.webhook import send_hook
 
 blueprint = Blueprint("request", __name__, url_prefix="/request")
-bns = None
-
-
-@blueprint.before_request
-def get_bn():
-    global bns
-    bns = User.query.filter_by(is_bn=True).all()
 
 
 class MockSQLResult:
@@ -182,7 +175,6 @@ def listing():
         next_url=next_url,
         prev_url=prev_url,
         show_last_update=False,
-        bns=bns,
         selected=nominator_id,
         count=total,
     )
@@ -216,7 +208,6 @@ def archive():
     nominator_id = request.args.get(
         "nominator", current_app.config["DEFAULT_NOMINATOR"], type=int
     )
-    nominator = User.query.options(load_only("show_rejected")).get_or_404(nominator_id)
     filter_op = and_(Request.status_ == 3, Request.target_bn_id == nominator_id)
 
     page = request.args.get("page", 1, type=int)
@@ -244,7 +235,6 @@ def archive():
         scripts=["admin.js", "index.js"],
         next_url=next_url,
         prev_url=prev_url,
-        bns=bns,
         selected=nominator_id,
     )
 
@@ -287,7 +277,6 @@ def rejected():
         scripts=["admin.js", "index.js"],
         next_url=next_url,
         prev_url=prev_url,
-        bns=bns,
         selected=nominator_id,
     )
 
@@ -323,7 +312,6 @@ def accepted():
         next_url=next_url,
         prev_url=prev_url,
         show_last_update=True,
-        bns=bns,
         selected=nominator_id,
         count=total,
     )
@@ -365,6 +353,5 @@ def nominations():
         next_url=next_url,
         prev_url=prev_url,
         with_reason=False,
-        bns=bns,
         selected=nominator_id,
     )

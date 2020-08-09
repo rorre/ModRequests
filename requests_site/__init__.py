@@ -54,6 +54,11 @@ def create_app(config_file="config.json"):
     @app.before_first_request
     def init_db():
         db.create_all()
+    
+    @app.context_processor
+    def get_bns():
+        bns = User.query.filter_by(is_bn=True).all()
+        return dict(bns=bns)
 
     return app
 
