@@ -30,6 +30,7 @@ def create_app(config_file="config.json"):
         migrate,
         bundler,
         nl2br,
+        md,
     )
     from requests_site.models import User, Request
 
@@ -40,6 +41,7 @@ def create_app(config_file="config.json"):
     migrate.init_app(app, db, render_as_batch=True)
     bundler.init_app(app)
     app.jinja_env.filters["nlbr"] = nl2br
+    app.jinja_env.filters["md"] = md
 
     admin.add_view(AdminView(User, db.session, endpoint="/user"))
     admin.add_view(AdminView(Request, db.session, endpoint="/req"))
@@ -54,7 +56,7 @@ def create_app(config_file="config.json"):
     @app.before_first_request
     def init_db():
         db.create_all()
-    
+
     @app.context_processor
     def get_bns():
         bns = User.query.filter_by(is_bn=True).all()

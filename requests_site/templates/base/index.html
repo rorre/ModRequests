@@ -30,7 +30,7 @@
             {% if bn.show_notice and bn.notice %}
             <div class="ui info message">
                 <div class="header">Notice for {{ bn.username }}</div>
-                {{ bn.notice }}
+                {{ bn.notice | md | safe }}
             </div>
             {% endif %}
         {% endif %}
