@@ -72,3 +72,32 @@ $(".nominatedbtn").click(function (e) {
         location.reload()
     }).catch(handle_error)
 })
+
+
+$(".unarchivebtn").click(function (e) {
+    const set_id = $(this).data("set-id")
+
+    $('body').toast({
+        message: 'Are you sure you want to unarchive this map? The request will be back to accepted requests.',
+        displayTime: 0,
+        actions: [
+            {
+                text: "Yes",
+                icon: "check",
+                class: "green",
+                click: () => {
+                    $('body').toast({ message: "Unarchiving..." })
+                    axios.post("/request/" + set_id, { "status_": 2, "archive": false }).then((e) => {
+                        $('body').toast({ message: "Done!" })
+                        location.reload()
+                    }).catch(handle_error)
+                }
+            },
+            {
+                icon: 'ban',
+                class: 'red',
+                text: "No"
+            }
+        ]
+    })
+})

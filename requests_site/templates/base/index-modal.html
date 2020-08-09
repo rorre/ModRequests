@@ -36,6 +36,9 @@
                     <button class="ui button showmodal" data-dbid="{{ db.id }}">
                         Show info
                     </button>
+                    {% if db.status_ == 3 and current_user.is_bn and db.target_bn_id == current_user.osu_uid %}
+                        <div class="ui button unarchivebtn" data-set-id="{{ db.id }}">Unarchive</div>
+                    {% endif %}
                 </td>
             </tr>
             {% endfor %}
