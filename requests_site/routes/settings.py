@@ -14,6 +14,8 @@ class SettingsForm(FlaskForm):
     allow_multiple_reqs = BooleanField("Allow multiple reqs")
     show_rejected = BooleanField("Show rejected maps")
     rules = TextAreaField("Rules")
+    notice = TextAreaField("Notice")
+    show_notice = BooleanField("Show notice")
     submit = SubmitField("Save")
 
 
@@ -25,12 +27,17 @@ def index():
     form.allow_multiple_reqs.default = current_user.allow_multiple_reqs
     form.rules.default = current_user.rules
     form.show_rejected.default = current_user.show_rejected
+    form.notice.default = current_user.notice
+    form.show_notice.default = current_user.show_notice
+
     if form.validate_on_submit():
         current_user.is_closed = form.is_closed.data
         current_user.allow_multiple_reqs = form.allow_multiple_reqs.data
         current_user.rules = form.rules.data
         current_user.show_rejected = form.show_rejected.data
-        db.session.add(current_user)
+        current_user.notice = form.notice.data
+        current_user.show_notice = form.show_notice.data
+
         db.session.commit()
         flash("Done applying settings.")
     else:

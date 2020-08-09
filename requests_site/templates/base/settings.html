@@ -15,8 +15,10 @@
     {{ macros.render_checkbox(form.allow_multiple_reqs) }}
     {{ macros.render_checkbox(form.show_rejected) }}
     {{ macros.render_field(form.rules) }}
+    {{ macros.render_field(form.notice) }}
+    {{ macros.render_checkbox(form.show_notice) }}
     <div class="ui message">
-        <p>You can use markdown on Rules field.</p>
+        <p>You can use markdown on Rules and Notice field.</p>
     </div>
     {{ form.submit(class_="ui button") }}
 </form>

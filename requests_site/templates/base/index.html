@@ -24,6 +24,17 @@
         </select>
     </form>
     <div class="ui divider"></div>
+
+    {% for bn in bns %}
+        {% if selected == bn.osu_uid %}
+            {% if bn.show_notice and bn.notice %}
+            <div class="ui info message">
+                <div class="header">Notice for {{ bn.username }}</div>
+                {{ bn.notice }}
+            </div>
+            {% endif %}
+        {% endif %}
+    {% endfor %}
     
     {% if reqs %}
         <div class="ui centered doubling cards">
