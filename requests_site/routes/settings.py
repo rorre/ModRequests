@@ -5,6 +5,7 @@ from wtforms.fields import BooleanField, TextAreaField, SubmitField
 
 from requests_site.decorator import bn_only
 from requests_site.plugins import db
+from requests_site.webhook import send_hook_queue
 
 blueprint = Blueprint("settings", __name__, url_prefix="/settings")
 
@@ -31,6 +32,8 @@ def index():
     form.show_notice.default = current_user.show_notice
 
     if form.validate_on_submit():
+        notify = current_user.is_closed != form.is_closed.data
+
         current_user.is_closed = form.is_closed.data
         current_user.allow_multiple_reqs = form.allow_multiple_reqs.data
         current_user.rules = form.rules.data
@@ -40,6 +43,8 @@ def index():
 
         db.session.commit()
         flash("Done applying settings.")
+        if notify:
+            send_hook_queue(current_user)
     else:
         form.process()
     return render_template("base/settings.html", form=form)
