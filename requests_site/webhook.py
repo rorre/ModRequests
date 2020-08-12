@@ -46,7 +46,7 @@ def send_hook_queue(user):
 
     for condition, url in hooks.items():
         try:
-            result = eval(condition, {"req": beatmap})
+            result = eval(condition, {"user": user})
         except:
             continue
 
