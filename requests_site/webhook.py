@@ -31,10 +31,9 @@ def send_hook_queue(user):
     if not hooks:
         return
 
+    status = "closed" if user.is_closed else "open"
     desc = (
-        f"{user.username} is now " + "closed"
-        if user.is_closed
-        else "open" + " for requests!"
+        f"{user.username} is " + status + " for requests!"
     )
 
     embed = discord.Embed(
