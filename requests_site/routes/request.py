@@ -126,9 +126,9 @@ def delete(set_id):
     mapset = Request.query.filter_by(id=set_id).first_or_404()
     if mapset.requester_id != current_user.osu_uid:
         return abort(403)
+    send_hook("delete_request", mapset)
     db.session.delete(mapset)
     db.session.commit()
-    send_hook("delete_request", mapset)
     flash("Deleted.")
     return redirect(url_for("base.index"))
 
