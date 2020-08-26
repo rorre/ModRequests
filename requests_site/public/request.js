@@ -35,7 +35,7 @@ function doneTyping() {
         var mode
         if (match[1] == "b") { mode = "b" }
         else { mode = "s" }
-        axios.get(`/${mode}/${match[2]}`).then(function (response) {
+        axios.get(`/map/${mode}/${match[2]}`).then(function (response) {
             $("#song").val(response.data.song)
             $("#mapset_id").val(response.data.mapset_id)
             $("#mapper").val(response.data.mapper)
