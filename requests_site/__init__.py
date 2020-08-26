@@ -2,7 +2,7 @@ __version__ = "0.1.0"
 
 import json
 
-from flask import Flask, flash, redirect, url_for
+from flask import Flask, flash, redirect, render_template, url_for
 from flask_admin.contrib.sqla import ModelView
 from flask_login import current_user
 
@@ -52,6 +52,14 @@ def create_app(config_file="config.json"):
     app.register_blueprint(request.blueprint)
     app.register_blueprint(user.blueprint)
     app.register_blueprint(settings.blueprint)
+
+    @app.errorhandler(404)
+    def not_found(e):
+        return render_template("404.html"), 404
+
+    @app.errorhandler(505)
+    def internal_error(e):
+        return render_template("500.html"), 500
 
     @app.before_first_request
     def init_db():
