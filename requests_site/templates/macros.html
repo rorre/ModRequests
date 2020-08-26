@@ -16,34 +16,47 @@
             Mapped by {{ db.mapper }}
         </div>
     </div>
+
     <div class="extra content">
         <a>
             <i class="info circle icon"></i>
             {{ db.status.name }}
         </a>
-        {% if user.is_bn and db.target_bn_id == user.osu_uid and db.status.value == 0 %}
+        {% if user.is_bn and db.target_bn_id == user.osu_uid and db.status.value == 2 %}
+        <div class="ui checkbox right floated">
+            <input type="checkbox" id="nominate-{{ db.id }}">
+            <label>Nominating</label>
+        </div>
+        {% endif %}
+    </div>
+
+    {% if user.is_bn and db.target_bn_id == user.osu_uid %}
+    <div class="extra content">
+        {% if db.status.value == 0 %}
         <div>
             <div class="ui two buttons">
                 <div class="ui basic green button acceptreq" data-set-id="{{ db.id }}">Accept</div>
                 <div class="ui basic red button declinereq" data-set-id="{{ db.id }}">Decline</div>
             </div>
         </div>
-        {% elif user.is_bn and db.target_bn_id == user.osu_uid and db.status.value == 2 %}
-        <div class="ui checkbox">
-            <input type="checkbox" id="nominate-{{ db.id }}">
-            <label>Nominating</label>
-        </div>
+        {% elif db.status.value == 2 %}
         <div class="ui bottom attached button archivebtn" data-set-id="{{ db.id }}">
             <i class="inbox icon"></i>
             Archive Request
         </div>
-        {% elif user.is_authenticated and db.status.value == 0 and db.requester_id == user.osu_uid %}
+        {% endif %}
+    </div>
+    {% endif %}
+
+    {% if user.is_authenticated and db.status.value == 0 and db.requester_id == user.osu_uid %}
+    <div class="extra content">
         <div class="ui bottom attached button cancelbtn" data-set-id="{{ db.id }}">
             <i class="minus icon"></i>
             Cancel Request
         </div>
-        {% endif %}
     </div>
+    {% endif %}
+
 </div>
 {% endmacro %}
 
@@ -94,9 +107,9 @@
     <a class="header">{{ header }}</a>
     <div class="description">
         {% if timeago %}
-            <time class="timeago" datetime="{{ description }}Z"></time>
+        <time class="timeago" datetime="{{ description }}Z"></time>
         {% else %}
-            {{ description }}
+        {{ description }}
         {% endif %}
     </div>
 </div>
@@ -134,14 +147,14 @@
                     {{ render_item("Mapper", db.mapper) }}
                     {{ render_item("Requested at", db.requested_at.isoformat(timespec='seconds'))}}
                     {% if db.last_updated %}
-                        {{ render_item("Last updated", db.last_updated.isoformat(timespec='seconds')) }}
+                    {{ render_item("Last updated", db.last_updated.isoformat(timespec='seconds')) }}
                     {% else %}
-                        {{ render_item("Last updated", "None") }}
+                    {{ render_item("Last updated", "None") }}
                     {% endif %}
                     {% if db.target_bn %}
-                        {{ render_item("Target BN", db.target_bn.username) }}
+                    {{ render_item("Target BN", db.target_bn.username) }}
                     {% else %}
-                        {{ render_item("Target BN", "None") }}
+                    {{ render_item("Target BN", "None") }}
                     {% endif %}
                 </div>
                 <div class="column">

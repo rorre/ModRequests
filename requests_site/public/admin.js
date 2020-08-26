@@ -4,9 +4,10 @@ $(".acceptreq").click(function (e) {
 
     const set_id = $this.data("set-id")
     axios.post("/request/" + set_id, { "status_": 2 }).then((e) => {
-        var $parent = $($this.parents()[1])
+        var $parent = $($this.parents()[2])
         $parent.hide()
-        $parent.siblings("a").contents().last().replaceWith("Accepted")
+        var $a_status = $parent.siblings(".extra.content").contents("a")
+        $a_status.contents().last().replaceWith("Accepted")
     }).catch(handle_error)
 })
 
@@ -20,9 +21,10 @@ $(".declinereq").click(function (e) {
     $("#rejbtn-" + set_id).click((e) => {
         e.preventDefault()
         axios.post("/request/" + set_id, { "status_": 1, "archive": true, "reason": $(`#reason-${set_id}`).val() }).then((e) => {
-            var $parent = $($this.parents()[1])
+            var $parent = $($this.parents()[2])
             $parent.hide()
-            $parent.siblings("a").contents().last().replaceWith("Declined")
+            var $a_status = $parent.siblings(".extra.content").contents("a")
+            $a_status.contents().last().replaceWith("Declined")
         }).catch(handle_error)
     })
 })
