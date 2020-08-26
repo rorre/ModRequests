@@ -16,7 +16,13 @@ from flask_login import current_user, login_required
 from flask_wtf import FlaskForm
 from sqlalchemy import and_, or_
 from sqlalchemy.orm import load_only
-from wtforms.fields import IntegerField, SelectField, SubmitField, TextField
+from wtforms.fields import (
+    IntegerField,
+    SelectField,
+    SubmitField,
+    TextField,
+    TextAreaField,
+)
 from wtforms.fields.html5 import URLField
 from wtforms.validators import Required
 
@@ -36,6 +42,7 @@ class NewRequestForm(FlaskForm):
     song = TextField("Artist - Title", validators=[Required()])
     mapset_id = IntegerField("Mapset ID", validators=[Required()])
     mapper = TextField("Mapper", validators=[Required()])
+    note = TextAreaField("Note")
     submit = SubmitField("Submit", validators=[Required()])
     target_bn = SelectField("Nominator")
 
@@ -90,6 +97,7 @@ def create():
             link=form.link.data,
             mapset_id=form.mapset_id.data,
             mapper=form.mapper.data,
+            note=form.note.data,
             target_bn=target_bn,
         )
         current_user.requests.append(request)

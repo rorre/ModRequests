@@ -25,6 +25,7 @@
     {{ macros.render_field(form.song, disabled=True) }}
     {{ macros.render_field(form.mapset_id, disabled=True) }}
     {{ macros.render_field(form.mapper, disabled=True) }}
+    {{ macros.render_field(form.note) }}
     {{ macros.render_field(form.target_bn, class="ui dropdown") }}
     <div class="field" id="bn_rules"></div>
     {{ form.submit(class_="ui button") }}

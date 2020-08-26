@@ -45,4 +45,8 @@
     {% else %}
         No reqs available \o/
     {% endif %}
+
+    {% for db in reqs %}
+        {{ macros.create_modal(db) }}
+    {% endfor %}
 {% endblock %}

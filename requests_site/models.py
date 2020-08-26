@@ -95,6 +95,7 @@ class Request(db.Model):
     link = db.Column(db.Unicode, nullable=True)
     mapset_id = db.Column(db.Integer, nullable=True)
     mapper = db.Column(db.Unicode, nullable=False)
+    note = db.Column(db.Text)
     reason = db.Column(db.Text)
     archive = db.Column(db.Boolean, default=False)
 

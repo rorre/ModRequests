@@ -27,6 +27,8 @@
             <input type="checkbox" id="nominate-{{ db.id }}">
             <label>Nominating</label>
         </div>
+        {% else %}
+        <a class="showmodal right floated" data-dbid="{{ db.id }}">Details</a>
         {% endif %}
     </div>
 
@@ -158,6 +160,12 @@
                     {% endif %}
                 </div>
                 <div class="column">
+                    <div class="item">
+                        <a class="header">Note</a>
+                        <div class="description" style="word-wrap: break-word">
+                            {{ db.note | default("No note provided.", true) }}
+                        </div>
+                    </div>
                     {% if db.status_ == 1 %}
                     <div class="item">
                         <a class="header">Reason</a>
