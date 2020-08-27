@@ -85,6 +85,7 @@ def create():
             and_(
                 Request.mapset_id == form.mapset_id.data,
                 Request.status_.in_([Status.Pending.value, Status.Accepted.value]),
+                Request.target_bn_id == form.target_bn.data,
             )
         ).all()
         if existing_map:
