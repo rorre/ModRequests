@@ -148,7 +148,11 @@ def search(query):
     for req in requests:
         new = {}
         new["title"] = req.song
-        new["description"] = f"Mapped by {req.mapper} | {req.status.name}"
+        new["description"] = (
+            f"Mapped by {req.mapper} | "
+            + f"{req.status.name} | "
+            + f"Requested to {req.target_bn.username}"
+        )
         json["results"].append(new)
     return jsonify(json)
 
