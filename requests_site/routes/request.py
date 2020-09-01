@@ -263,7 +263,7 @@ def rejected():
         page = request.args.get("page", 1, type=int)
         reqs = (
             Request.query.filter(filter_op)
-            .order_by(Request.requested_at.desc())
+            .order_by(Request.last_updated.desc())
             .paginate(page, 10, False)
         )
         next_url = (
@@ -301,7 +301,7 @@ def accepted():
     page = request.args.get("page", 1, type=int)
     reqs_query = Request.query.filter(
         and_(Request.status_ == 2, Request.target_bn_id == nominator_id)
-    ).order_by(Request.requested_at.desc())
+    ).order_by(Request.last_updated.desc())
     total = reqs_query.count()
     reqs = reqs_query.paginate(page, 10, False)
     next_url = (
@@ -342,7 +342,7 @@ def nominations():
                 Request.target_bn_id == nominator_id,
             )
         )
-        .order_by(Request.requested_at.desc())
+        .order_by(Request.last_updated.desc())
         .paginate(page, 10, False)
     )
     next_url = (
