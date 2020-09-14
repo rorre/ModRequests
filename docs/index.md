@@ -11,7 +11,7 @@ It was made with simplicity in mind and attempts to be as easy to use as possibl
 Although it was first made for only -Keitaro himself, it was changed so that other nominators could use it too.
 
 !!! note
-    If you are a Beatmap Nominator and is interested in joining, please look at [this page](becoming-a-nominator.html).
+    If you are a Beatmap Nominator and is interested in joining, please look at [this page](nominator).
 
 ---
 ## Features
