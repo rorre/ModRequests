@@ -1,0 +1,14 @@
+site_name: Requests Site
+site_description: A site to request mods to Beatmap Nominators.
+
+theme:
+    name: 'material'
+
+repo_name: rorre/ModRequests
+repo_url: https://github.com/rorre/ModRequests
+edit_uri: ""
+
+markdown_extensions:
+  - admonition
+  - attr_list
+  - pymdownx.tabbed
