@@ -1,54 +1,71 @@
 {% extends "layout.html" %}
 {% import 'macros.html' as macros %}
+{% set is_mine_page = "mine" in request.path %}
 
 {% block content %}
-    <h2 class="ui header">
-        {{ title }}
-        {% if subtitle %}
-        <div class="sub header">{{ subtitle }}</div>
-        {% endif %}
-    </h2>
-    <div class="ui divider"></div>
-
-    {% if bns %}
-    <form id="nominator_select">
-        <span>Nominator:</span>
-        <select class="ui dropdown" name="nominator" id="selector">
-            {% for bn in bns %}
-            <option value="{{bn.osu_uid}}" {% if selected == bn.osu_uid %} selected {% endif %}>{{bn.username}}</option>
-            {% endfor %}
-        </select>
-    </form>
-    <div class="ui divider"></div>
+<h2 class="ui header">
+    {{ title }}
+    {% if subtitle %}
+    <div class="sub header">{{ subtitle }}</div>
     {% endif %}
+</h2>
+<div class="ui divider"></div>
 
-    {% if reqs %}
-    <table class="ui celled table">
-        <thead><tr>
+{% if bns and not is_mine_page %}
+<form id="nominator_select">
+    <span>Nominator:</span>
+    <select class="ui dropdown" name="nominator" id="selector">
+        {% for bn in bns %}
+        <option value="{{bn.osu_uid}}" {% if selected == bn.osu_uid %} selected {% endif %}>{{bn.username}}</option>
+        {% endfor %}
+    </select>
+</form>
+<div class="ui divider"></div>
+{% endif %}
+
+{% if reqs %}
+<table class="ui celled table">
+    <thead>
+        <tr>
+            {% if is_mine_page %}
+            <th class="ten wide">Song</th>
+            <th class="two wide">Nominator</th>
+            <th class="two wide">Status</th>
+            <th class="six wide">Action</th>
+            {% else %}
             <th class="twelve wide">Song</th>
             <th class="six wide">Action</th>
-        </tr></thead>
-        <tbody>
-            {% for db in reqs %}
-            <tr>
-                <td><a href="https://osu.ppy.sh/s/{{ db.mapset_id }}">{{ db.song }}</a></td>
-                <td>
-                    <button class="ui button showmodal" data-dbid="{{ db.id }}">
-                        Show info
-                    </button>
-                    {% if db.status_ == 3 and current_user.is_bn and db.target_bn_id == current_user.osu_uid %}
-                        <div class="ui button unarchivebtn" data-set-id="{{ db.id }}">Unarchive</div>
-                    {% endif %}
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+            {% endif %}
+        </tr>
+    </thead>
+    <tbody>
+        {% for db in reqs %}
+        <tr>
+            <td><a href="https://osu.ppy.sh/s/{{ db.mapset_id }}">{{ db.song }}</a></td>
+            {% if is_mine_page %}
+            <td>{{ db.target_bn.username }}</td>
+            <td>{{ db.status.name | replace("_", " ") }}</td>
+            {% endif %}
+            <td>
+                <button class="ui button showmodal" data-dbid="{{ db.id }}">
+                    Show info
+                </button>
+                {% if db.status_ == 3 and current_user.is_bn and db.target_bn_id == current_user.osu_uid %}
+                <div class="ui button unarchivebtn" data-set-id="{{ db.id }}">Unarchive</div>
+                {% endif %}
+                {% if db.status.value == 0 and db.requester_id == current_user.osu_uid %}
+                <div class="ui button cancelbtn" data-set-id="{{ db.id }}">Cancel</div>
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
 
-    {% for db in reqs %}
-        {{ macros.create_modal(db) }}
-    {% endfor %}
-    {% else %}
-        Nothing to show. Perhaps the nominator has chosen to not show the data.
-    {% endif %}
+{% for db in reqs %}
+{{ macros.create_modal(db) }}
+{% endfor %}
+{% else %}
+Nothing to show. Perhaps the nominator has chosen to not show the data.
+{% endif %}
 {% endblock %}
