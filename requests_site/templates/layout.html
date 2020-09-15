@@ -66,6 +66,10 @@
             <a href="{{ url_for('settings.index') }}" class="item">Settings</a>
             {% endif %}
 
+            {% if config['DOCS_ENABLED'] %}
+            <a href="/docs" class="item">Documentation</a>
+            {% endif %}
+
             <a href="{{ url_for('base.support') }}" class="item">Support</a>
 
             <div class="right menu">
