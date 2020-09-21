@@ -100,33 +100,30 @@
 
         <br><br>
 
-        <div class="ui aligned grid">
-            {% if prev_url %}
-            <div class="left floated six wide column">
-                <a class="ui labeled icon button" href="{{ prev_url }}">
-                    <i class="left arrow icon"></i>
-                    Previous
-                </a>
-            </div>
-            {% endif %}
-
-            {% if next_url %}
-            {% if prev_url %}
-            <div class="right aligned six wide column">
-                {% else %}
-                <div class="right aligned column">
+        {% if pagination is defined and (pagination.pages and pagination.pages != 1)%}
+        <div class="ui centered grid">
+            <div class="center aligned column">
+                <div class="ui pagination right menu">
+                    {%- for page in pagination.iter_pages() %}
+                    {% if page %}
+                    {% if page != pagination.page %}
+                    <a class="item"
+                        href="{{ url_for(request.endpoint, page=page, nominator=request.args.get('nominator')) }}">{{ page }}</a>
+                    {% else %}
+                    <a class="active item">{{ page }}</a>
                     {% endif %}
-                    <a class="ui right labeled icon button" href="{{ next_url }}">
-                        <i class="right arrow icon"></i>
-                        Next
-                    </a>
+                    {% else %}
+                    <div class="disabled item">…</div>
+                    {% endif %}
+                    {%- endfor %}
                 </div>
-                {% endif %}
             </div>
         </div>
-        {% assets "js_all" %}
-        <script src="{{ ASSET_URL }}"></script>
-        {% endassets %}
+        {% endif %}
+    </div>
+    {% assets "js_all" %}
+    <script src="{{ ASSET_URL }}"></script>
+    {% endassets %}
 </body>
 
 </html>

@@ -169,24 +169,13 @@ def listing():
     ).order_by(Request.requested_at.desc())
     total = reqs_query.count()
     reqs = reqs_query.paginate(page, 10, False)
-    next_url = (
-        url_for("request.listing", nominator=nominator_id, page=reqs.next_num)
-        if reqs.has_next
-        else None
-    )
-    prev_url = (
-        url_for("request.listing", nominator=nominator_id, page=reqs.prev_num)
-        if reqs.has_prev
-        else None
-    )
 
     return render_template(
         "base/index.html",
+        pagination=reqs,
         reqs=reqs.items,
         title="Requests list",
         scripts=["admin.js", "index.js"],
-        next_url=next_url,
-        prev_url=prev_url,
         show_last_update=False,
         selected=nominator_id,
         count=total,
@@ -202,17 +191,14 @@ def mine():
         .order_by(Request.requested_at.desc())
         .paginate(page, 10, False)
     )
-    next_url = url_for("request.mine", page=reqs.next_num) if reqs.has_next else None
-    prev_url = url_for("request.mine", page=reqs.prev_num) if reqs.has_prev else None
 
     return render_template(
         "base/index-modal.html",
+        pagination=reqs,
         reqs=reqs.items,
         title="My requests",
         subtitle="Where all of your (past) requests resides.",
         scripts=["admin.js", "index.js"],
-        next_url=next_url,
-        prev_url=prev_url,
     )
 
 
@@ -229,25 +215,14 @@ def archive():
         .order_by(Request.requested_at.desc())
         .paginate(page, 10, False)
     )
-    next_url = (
-        url_for("request.archive", nominator=nominator_id, page=reqs.next_num)
-        if reqs.has_next
-        else None
-    )
-    prev_url = (
-        url_for("request.archive", nominator=nominator_id, page=reqs.prev_num)
-        if reqs.has_prev
-        else None
-    )
 
     return render_template(
         "base/index-modal.html",
+        pagination=reqs,
         reqs=reqs.items,
         title="Archived requests",
         subtitle="All of the requests that is already done and not for nominations.",
         scripts=["admin.js", "index.js"],
-        next_url=next_url,
-        prev_url=prev_url,
         selected=nominator_id,
     )
 
@@ -267,29 +242,16 @@ def rejected():
             .order_by(Request.last_updated.desc())
             .paginate(page, 10, False)
         )
-        next_url = (
-            url_for("request.rejected", nominator=nominator_id, page=reqs.next_num)
-            if reqs.has_next
-            else None
-        )
-        prev_url = (
-            url_for("request.rejected", nominator=nominator_id, page=reqs.prev_num)
-            if reqs.has_prev
-            else None
-        )
     else:
         reqs = MockSQLResult()
-        next_url = None
-        prev_url = None
 
     return render_template(
         "base/index-modal.html",
+        pagination=reqs,
         reqs=reqs.items,
         title="Rejected requests",
         subtitle="Declined requests are shown here. Only if the nominator enables it, though.",
         scripts=["admin.js", "index.js"],
-        next_url=next_url,
-        prev_url=prev_url,
         selected=nominator_id,
     )
 
@@ -305,25 +267,14 @@ def accepted():
     ).order_by(Request.last_updated.desc())
     total = reqs_query.count()
     reqs = reqs_query.paginate(page, 10, False)
-    next_url = (
-        url_for("request.accepted", nominator=nominator_id, page=reqs.next_num)
-        if reqs.has_next
-        else None
-    )
-    prev_url = (
-        url_for("request.accepted", nominator=nominator_id, page=reqs.prev_num)
-        if reqs.has_prev
-        else None
-    )
 
     return render_template(
         "base/index.html",
+        pagination=reqs,
         reqs=reqs.items,
         title="Accepted requests",
         subtitle="Those who gets accepted. Once they're done, they will end up in Archive.",
         scripts=["admin.js", "index.js"],
-        next_url=next_url,
-        prev_url=prev_url,
         show_last_update=True,
         selected=nominator_id,
         count=total,
@@ -346,25 +297,14 @@ def nominations():
         .order_by(Request.last_updated.desc())
         .paginate(page, 10, False)
     )
-    next_url = (
-        url_for("request.nominations", nominator=nominator_id, page=reqs.next_num)
-        if reqs.has_next
-        else None
-    )
-    prev_url = (
-        url_for("request.nominations", nominator=nominator_id, page=reqs.prev_num)
-        if reqs.has_prev
-        else None
-    )
 
     return render_template(
         "base/index-table.html",
+        pagination=reqs,
         reqs=reqs.items,
         title="Nominations",
         subtitle="Beatmaps that got me interested in pushing will be logged here.",
         scripts=["admin.js", "index.js"],
-        next_url=next_url,
-        prev_url=prev_url,
         with_reason=False,
         selected=nominator_id,
     )
