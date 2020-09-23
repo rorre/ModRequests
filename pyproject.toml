@@ -24,6 +24,7 @@ mkdocs-material = "^5.5.12"
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.2"
+sqlalchemy-stubs = "^0.3"
 
 [build-system]
 requires = ["poetry>=0.12"]

@@ -1,10 +1,18 @@
 import enum
 from datetime import datetime
 
+from typing import TYPE_CHECKING
 from requests_site.plugins import db, login_manager
 
+if TYPE_CHECKING:
+    from flask_sqlalchemy.model import Model
 
-class User(db.Model):
+    BaseModel = db.make_declarative_base(Model)
+else:
+    BaseModel = db.Model
+
+
+class User(BaseModel):
     __tablename__ = "users"
 
     osu_uid = db.Column(db.Integer, primary_key=True)
@@ -76,7 +84,7 @@ class Status(enum.IntEnum):
     Nominated = 5
 
 
-class Request(db.Model):
+class Request(BaseModel):
     __tablename__ = "requests"
 
     id = db.Column(db.Integer, primary_key=True)
