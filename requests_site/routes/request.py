@@ -158,17 +158,23 @@ def search(query):
     return jsonify(json)
 
 
+def fetch_db(filter_op, order_op):
+    page = request.args.get("page", 1, type=int)
+    reqs = Request.query.filter(filter_op).order_by(order_op)
+    total = reqs.count()
+    reqs_paginated = reqs.paginate(page, 10, False)
+
+    return reqs_paginated, total, reqs
+
+
 @blueprint.route("/list")
 def listing():
     nominator_id = request.args.get(
         "nominator", current_app.config["DEFAULT_NOMINATOR"], type=int
     )
-    page = request.args.get("page", 1, type=int)
-    reqs_query = Request.query.filter(
-        and_(Request.status_ == 0, Request.target_bn_id == nominator_id)
-    ).order_by(Request.requested_at.desc())
-    total = reqs_query.count()
-    reqs = reqs_query.paginate(page, 10, False)
+    filter_op = and_(Request.status_ == 0, Request.target_bn_id == nominator_id)
+    order_op = Request.requested_at.desc()
+    reqs, total, _ = fetch_db(filter_op, order_op)
 
     return render_template(
         "base/index.html",
@@ -185,12 +191,9 @@ def listing():
 @blueprint.route("/list/mine")
 @login_required
 def mine():
-    page = request.args.get("page", 1, type=int)
-    reqs = (
-        Request.query.filter(Request.requester == current_user)
-        .order_by(Request.requested_at.desc())
-        .paginate(page, 10, False)
-    )
+    filter_op = Request.requester == current_user
+    order_op = Request.requested_at.desc()
+    reqs = fetch_db(filter_op, order_op)[0]
 
     return render_template(
         "base/index-modal.html",
@@ -208,13 +211,8 @@ def archive():
         "nominator", current_app.config["DEFAULT_NOMINATOR"], type=int
     )
     filter_op = and_(Request.status_ == 3, Request.target_bn_id == nominator_id)
-
-    page = request.args.get("page", 1, type=int)
-    reqs = (
-        Request.query.filter(filter_op)
-        .order_by(Request.requested_at.desc())
-        .paginate(page, 10, False)
-    )
+    order_op = Request.requested_at.desc()
+    reqs = fetch_db(filter_op, order_op)[0]
 
     return render_template(
         "base/index-modal.html",
@@ -236,12 +234,8 @@ def rejected():
     show_rejected = nominator.show_rejected
     if show_rejected:
         filter_op = and_(Request.status_ == 1, Request.target_bn_id == nominator_id)
-        page = request.args.get("page", 1, type=int)
-        reqs = (
-            Request.query.filter(filter_op)
-            .order_by(Request.last_updated.desc())
-            .paginate(page, 10, False)
-        )
+        order_op = Request.last_updated.desc()
+        reqs = fetch_db(filter_op, order_op)[0]
     else:
         reqs = MockSQLResult()
 
@@ -261,12 +255,9 @@ def accepted():
     nominator_id = request.args.get(
         "nominator", current_app.config["DEFAULT_NOMINATOR"], type=int
     )
-    page = request.args.get("page", 1, type=int)
-    reqs_query = Request.query.filter(
-        and_(Request.status_ == 2, Request.target_bn_id == nominator_id)
-    ).order_by(Request.last_updated.desc())
-    total = reqs_query.count()
-    reqs = reqs_query.paginate(page, 10, False)
+    filter_op = Request.status_ == 2, Request.target_bn_id == nominator_id
+    order_op = Request.last_updated.desc()
+    reqs, total, _ = fetch_db(filter_op, order_op)
 
     return render_template(
         "base/index.html",
@@ -286,17 +277,12 @@ def nominations():
     nominator_id = request.args.get(
         "nominator", current_app.config["DEFAULT_NOMINATOR"], type=int
     )
-    page = request.args.get("page", 1, type=int)
-    reqs = (
-        Request.query.filter(
-            and_(
-                or_(Request.status_ == 4, Request.status_ == 5),
-                Request.target_bn_id == nominator_id,
-            )
-        )
-        .order_by(Request.last_updated.desc())
-        .paginate(page, 10, False)
+    filter_op = and_(
+        or_(Request.status_ == 4, Request.status_ == 5),
+        Request.target_bn_id == nominator_id,
     )
+    order_op = Request.last_updated.desc()
+    reqs = fetch_db(filter_op, order_op)[0]
 
     return render_template(
         "base/index-table.html",
