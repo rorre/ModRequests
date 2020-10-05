@@ -68,7 +68,6 @@ def support():
 
 @blueprint.route("/set-nominator")
 def set_nominator():
-    print(session)
     session["nominator"] = request.args.get("nominator")
     redirect_url = request.referrer or url_for("request.listing")
     return redirect(redirect_url)
