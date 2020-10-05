@@ -1,7 +1,6 @@
 import re
 
 import mistune
-
 from authlib.integrations.flask_client import OAuth
 from flask_admin import Admin
 from flask_assets import Bundle, Environment

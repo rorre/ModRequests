@@ -6,11 +6,12 @@ from flask import (
     make_response,
     redirect,
     render_template,
-    url_for,
-    session,
     request,
+    session,
+    url_for,
 )
 from flask_login import current_user, login_required
+
 from requests_site.models import User
 from requests_site.plugins import md
 

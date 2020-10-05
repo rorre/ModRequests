@@ -1,7 +1,7 @@
 from flask import Blueprint, flash, render_template
 from flask_login import current_user
 from flask_wtf import FlaskForm
-from wtforms.fields import BooleanField, TextAreaField, SubmitField
+from wtforms.fields import BooleanField, SubmitField, TextAreaField
 
 from requests_site.decorator import bn_only
 from requests_site.plugins import db

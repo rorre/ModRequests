@@ -6,12 +6,12 @@ from flask import (
     current_app,
     flash,
     jsonify,
+    make_response,
     redirect,
     render_template,
     request,
-    url_for,
-    make_response,
     session,
+    url_for,
 )
 from flask_login import current_user, login_required
 from flask_wtf import FlaskForm
@@ -21,8 +21,8 @@ from wtforms.fields import (
     IntegerField,
     SelectField,
     SubmitField,
-    TextField,
     TextAreaField,
+    TextField,
 )
 from wtforms.fields.html5 import URLField
 from wtforms.validators import Required

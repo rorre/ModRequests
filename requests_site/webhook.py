@@ -32,9 +32,7 @@ def send_hook_queue(user):
         return
 
     status = "closed" if user.is_closed else "open"
-    desc = (
-        f"{user.username} is " + status + " for requests!"
-    )
+    desc = f"{user.username} is " + status + " for requests!"
 
     embed = discord.Embed(
         title=":bell: Request status changed!",
