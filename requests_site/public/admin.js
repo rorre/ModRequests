@@ -41,29 +41,16 @@ $(".archivebtn").click(function (e) {
         archive = true
     }
 
-    $('body').toast({
-        message: 'Are you sure you want to archive?',
-        displayTime: 0,
-        actions: [
-            {
-                text: "Yes",
-                icon: "check",
-                class: "green",
-                click: () => {
-                    $('body').toast({ message: "Archiving..." })
-                    axios.post("/request/" + set_id, { "status_": status, "archive": archive }).then((e) => {
-                        $($(this).parents()[1]).remove()
-                        $('body').toast({ message: "Done!" })
-                    }).catch(handle_error)
-                }
-            },
-            {
-                icon: 'ban',
-                class: 'red',
-                text: "No"
-            }
-        ]
-    })
+    createToast(
+        'Are you sure you want to archive?',
+        () => {
+            $('body').toast({ message: "Archiving..." })
+            axios.post("/request/" + set_id, { "status_": status, "archive": archive }).then((e) => {
+                $($(this).parents()[1]).remove()
+                $('body').toast({ message: "Done!" })
+            }).catch(handle_error)
+        }
+    )
 })
 
 $(".nominatedbtn").click(function (e) {
@@ -79,55 +66,29 @@ $(".nominatedbtn").click(function (e) {
 $(".unarchivebtn").click(function (e) {
     const set_id = $(this).data("set-id")
 
-    $('body').toast({
-        message: 'Are you sure you want to unarchive this map? The request will be back to accepted requests.',
-        displayTime: 0,
-        actions: [
-            {
-                text: "Yes",
-                icon: "check",
-                class: "green",
-                click: () => {
-                    $('body').toast({ message: "Unarchiving..." })
-                    axios.post("/request/" + set_id, { "status_": 2, "archive": false }).then((e) => {
-                        $('body').toast({ message: "Done!" })
-                        location.reload()
-                    }).catch(handle_error)
-                }
-            },
-            {
-                icon: 'ban',
-                class: 'red',
-                text: "No"
-            }
-        ]
-    })
+    createToast(
+        'Are you sure you want to unarchive this map? The request will be back to accepted requests.',
+        () => {
+            $('body').toast({ message: "Unarchiving..." })
+            axios.post("/request/" + set_id, { "status_": 2, "archive": false }).then((e) => {
+                $('body').toast({ message: "Done!" })
+                location.reload()
+            }).catch(handle_error)
+        }
+    )
 })
 
 $(".pendingbtn").click(function (e) {
     const set_id = $(this).data("set-id")
 
-    $('body').toast({
-        message: 'Are you sure you want to bring this request back to Pending?',
-        displayTime: 0,
-        actions: [
-            {
-                text: "Yes",
-                icon: "check",
-                class: "green",
-                click: () => {
-                    $('body').toast({ message: "Unarchiving..." })
-                    axios.post("/request/" + set_id, { "status_": 0, "archive": false, "reason": "" }).then((e) => {
-                        $('body').toast({ message: "Done!" })
-                        location.reload()
-                    }).catch(handle_error)
-                }
-            },
-            {
-                icon: 'ban',
-                class: 'red',
-                text: "No"
-            }
-        ]
-    })
+    createToast(
+        'Are you sure you want to bring this request back to Pending?',
+        () => {
+            $('body').toast({ message: "Unarchiving..." })
+            axios.post("/request/" + set_id, { "status_": 0, "archive": false, "reason": "" }).then((e) => {
+                $('body').toast({ message: "Done!" })
+                location.reload()
+            }).catch(handle_error)
+        }
+    )
 })

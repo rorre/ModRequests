@@ -16,6 +16,26 @@ function handle_error(err) {
     $("#err").html(message)
 }
 
+function createToast(message, onClick) {
+    $('body').toast({
+        message: message,
+        displayTime: 0,
+        actions: [
+            {
+                text: "Yes",
+                icon: "check",
+                class: "green",
+                click: onClick
+            },
+            {
+                icon: 'ban',
+                class: 'red',
+                text: "No"
+            }
+        ]
+    })
+}
+
 $('.ui.search').search({
     apiSettings: {
         url: '/request/search/{query}'
