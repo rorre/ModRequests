@@ -51,7 +51,7 @@
                     Show info
                 </button>
                 {% if db.status_ in [1, 3] and current_user.is_bn and db.target_bn_id == current_user.osu_uid %}
-                <div class="ui button unarchivebtn" data-set-id="{{ db.id }}">Unarchive</div>
+                <div class="ui button pendingbtn" data-set-id="{{ db.id }}">Revert to Pending</div>
                 {% endif %}
                 {% if db.status.value == 0 and db.requester_id == current_user.osu_uid %}
                 <div class="ui button cancelbtn" data-set-id="{{ db.id }}">Cancel</div>

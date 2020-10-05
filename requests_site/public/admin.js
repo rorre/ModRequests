@@ -7,7 +7,7 @@ $(".acceptreq").click(function (e) {
         var $parent = $($this.parents()[2])
         $parent.hide()
         var $a_status = $parent.siblings(".extra.content").contents("a")
-        $a_status.contents().last().replaceWith("Accepted")
+        $a_status.contents().first().replaceWith("Accepted")
     }).catch(handle_error)
 })
 
@@ -24,7 +24,7 @@ $(".declinereq").click(function (e) {
             var $parent = $($this.parents()[2])
             $parent.hide()
             var $a_status = $parent.siblings(".extra.content").contents("a")
-            $a_status.contents().last().replaceWith("Declined")
+            $a_status.contents().first().replaceWith("Declined")
         }).catch(handle_error)
     })
 })
@@ -90,6 +90,34 @@ $(".unarchivebtn").click(function (e) {
                 click: () => {
                     $('body').toast({ message: "Unarchiving..." })
                     axios.post("/request/" + set_id, { "status_": 2, "archive": false }).then((e) => {
+                        $('body').toast({ message: "Done!" })
+                        location.reload()
+                    }).catch(handle_error)
+                }
+            },
+            {
+                icon: 'ban',
+                class: 'red',
+                text: "No"
+            }
+        ]
+    })
+})
+
+$(".pendingbtn").click(function (e) {
+    const set_id = $(this).data("set-id")
+
+    $('body').toast({
+        message: 'Are you sure you want to bring this request back to Pending?',
+        displayTime: 0,
+        actions: [
+            {
+                text: "Yes",
+                icon: "check",
+                class: "green",
+                click: () => {
+                    $('body').toast({ message: "Unarchiving..." })
+                    axios.post("/request/" + set_id, { "status_": 0, "archive": false, "reason": "" }).then((e) => {
                         $('body').toast({ message: "Done!" })
                         location.reload()
                     }).catch(handle_error)
