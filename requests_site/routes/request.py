@@ -255,7 +255,7 @@ def accepted():
     nominator_id = request.args.get(
         "nominator", current_app.config["DEFAULT_NOMINATOR"], type=int
     )
-    filter_op = Request.status_ == 2, Request.target_bn_id == nominator_id
+    filter_op = and_(Request.status_ == 2, Request.target_bn_id == nominator_id)
     order_op = Request.last_updated.desc()
     reqs, total, _ = fetch_db(filter_op, order_op)
 
