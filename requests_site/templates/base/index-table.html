@@ -11,15 +11,7 @@
     <div class="ui divider"></div>
 
     {% if bns %}
-    <form id="nominator_select">
-        <span>Nominator:</span>
-        <select class="ui dropdown" name="nominator" id="selector">
-            {% for bn in bns %}
-            <option value="{{bn.osu_uid}}" {% if selected == bn.osu_uid %} selected {% endif %}>{{bn.username}}</option>
-            {% endfor %}
-        </select>
-    </form>
-    <div class="ui divider"></div>
+    {{ macros.render_nominator_select(bns, selected) }}
     {% endif %}
 
     {% if reqs %}

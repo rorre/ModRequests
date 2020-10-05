@@ -180,3 +180,17 @@
     </div>
 </div>
 {% endmacro %}
+
+{% macro render_nominator_select(bns, selected) %}
+<form id="nominator_select" action="/set-nominator">
+    <span>Nominator:</span>
+    <select class="ui dropdown" name="nominator" id="selector">
+        {% for bn in bns %}
+        <option value="{{bn.osu_uid}}" {% if selected|int() == bn.osu_uid %} selected {% endif %}>
+            {{bn.username}}
+        </option>
+        {% endfor %}
+    </select>
+</form>
+<div class="ui divider"></div>
+{% endmacro %}

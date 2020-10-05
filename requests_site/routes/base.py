@@ -7,6 +7,8 @@ from flask import (
     redirect,
     render_template,
     url_for,
+    session,
+    request,
 )
 from flask_login import current_user, login_required
 from requests_site.models import User
@@ -61,3 +63,11 @@ def get_rules(uid):
 @blueprint.route("/support")
 def support():
     return render_template("base/support.html")
+
+
+@blueprint.route("/set-nominator")
+def set_nominator():
+    print(session)
+    session["nominator"] = request.args.get("nominator")
+    redirect_url = request.referrer or url_for("request.listing")
+    return redirect(redirect_url)

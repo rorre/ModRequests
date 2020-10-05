@@ -11,6 +11,7 @@ from flask import (
     request,
     url_for,
     make_response,
+    session,
 )
 from flask_login import current_user, login_required
 from flask_wtf import FlaskForm
@@ -153,9 +154,7 @@ def fetch_db(filter_op, order_op):
 
 @blueprint.route("/list")
 def listing():
-    nominator_id = request.args.get(
-        "nominator", current_app.config["DEFAULT_NOMINATOR"], type=int
-    )
+    nominator_id = session.get("nominator", current_app.config["DEFAULT_NOMINATOR"])
     filter_op = and_(Request.status_ == 0, Request.target_bn_id == nominator_id)
     order_op = Request.requested_at.desc()
     reqs, total, _ = fetch_db(filter_op, order_op)
@@ -191,9 +190,7 @@ def mine():
 
 @blueprint.route("/list/archive")
 def archive():
-    nominator_id = request.args.get(
-        "nominator", current_app.config["DEFAULT_NOMINATOR"], type=int
-    )
+    nominator_id = session.get("nominator", current_app.config["DEFAULT_NOMINATOR"])
     filter_op = and_(Request.status_ == 3, Request.target_bn_id == nominator_id)
     order_op = Request.requested_at.desc()
     reqs = fetch_db(filter_op, order_op)[0]
@@ -211,9 +208,7 @@ def archive():
 
 @blueprint.route("/list/rejected")
 def rejected():
-    nominator_id = request.args.get(
-        "nominator", current_app.config["DEFAULT_NOMINATOR"], type=int
-    )
+    nominator_id = session.get("nominator", current_app.config["DEFAULT_NOMINATOR"])
     nominator = User.query.options(load_only("show_rejected")).get_or_404(nominator_id)
     show_rejected = nominator.show_rejected
     if show_rejected:
@@ -236,9 +231,7 @@ def rejected():
 
 @blueprint.route("/list/accepted")
 def accepted():
-    nominator_id = request.args.get(
-        "nominator", current_app.config["DEFAULT_NOMINATOR"], type=int
-    )
+    nominator_id = session.get("nominator", current_app.config["DEFAULT_NOMINATOR"])
     filter_op = and_(Request.status_ == 2, Request.target_bn_id == nominator_id)
     order_op = Request.last_updated.desc()
     reqs, total, _ = fetch_db(filter_op, order_op)
@@ -258,9 +251,7 @@ def accepted():
 
 @blueprint.route("/list/nominations")
 def nominations():
-    nominator_id = request.args.get(
-        "nominator", current_app.config["DEFAULT_NOMINATOR"], type=int
-    )
+    nominator_id = session.get("nominator", current_app.config["DEFAULT_NOMINATOR"])
     filter_op = and_(
         or_(Request.status_ == 4, Request.status_ == 5),
         Request.target_bn_id == nominator_id,

@@ -15,14 +15,9 @@
     <div class="ui divider"></div>
     <div class="ui hidden negative message" id="err"></div>
 
-    <form id="nominator_select">
-        <span>Nominator:</span>
-        <select class="ui dropdown" name="nominator" id="selector">
-            {% for bn in bns %}
-            <option value="{{bn.osu_uid}}" {% if selected == bn.osu_uid %} selected {% endif %}>{{bn.username}}</option>
-            {% endfor %}
-        </select>
-    </form>
+    {% if bns %}
+        {{ macros.render_nominator_select(bns, selected) }}
+    {% endif %}
     <div class="ui divider"></div>
 
     {% for bn in bns %}
