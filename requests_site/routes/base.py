@@ -63,7 +63,7 @@ def get_rules(uid):
 
 @blueprint.route("/support")
 def support():
-    return render_template("base/support.html")
+    return render_template("page/support.html")
 
 
 @blueprint.route("/set-nominator")

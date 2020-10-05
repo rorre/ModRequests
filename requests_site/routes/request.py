@@ -60,13 +60,13 @@ def create():
     if form.validate_on_submit():
         if not form.target_bn.data:
             flash("Invalid nominator.")
-            return render_template("base/req.html", form=form, scripts=["request.js"])
+            return render_template("page/req.html", form=form, scripts=["request.js"])
 
         form.target_bn.data = int(form.target_bn.data)
         target_bn = User.query.filter_by(osu_uid=form.target_bn.data).first()
         if target_bn.is_closed:
             flash(f"{target_bn.username} is currently closed.")
-            return render_template("base/req.html", form=form, scripts=["request.js"])
+            return render_template("page/req.html", form=form, scripts=["request.js"])
 
         if not target_bn.allow_multiple_reqs:
             existing_request = Request.query.filter(
@@ -79,7 +79,7 @@ def create():
             if existing_request:
                 flash("You already have a request opened.")
                 return render_template(
-                    "base/req.html", form=form, scripts=["request.js"]
+                    "page/req.html", form=form, scripts=["request.js"]
                 )
 
         existing_map = Request.query.filter(
@@ -91,7 +91,7 @@ def create():
         ).all()
         if existing_map:
             flash("There is a pending request for that beatmap already.")
-            return render_template("base/req.html", form=form, scripts=["request.js"])
+            return render_template("page/req.html", form=form, scripts=["request.js"])
 
         request = Request(
             status_=Status.Pending.value,
@@ -108,7 +108,7 @@ def create():
         send_hook("add_request", request)
         flash("Done adding request.")
         return redirect(url_for("request.listing", nominator=target_bn.osu_uid))
-    return render_template("base/req.html", form=form, scripts=["request.js"])
+    return render_template("page/req.html", form=form, scripts=["request.js"])
 
 
 @blueprint.route("/<int:set_id>", methods=["POST"])
@@ -160,7 +160,7 @@ def listing():
     reqs, total, _ = fetch_db(filter_op, order_op)
 
     return render_template(
-        "base/index.html",
+        "page/index.html",
         pagination=reqs,
         reqs=reqs.items,
         title="Requests list",
@@ -179,7 +179,7 @@ def mine():
     reqs = fetch_db(filter_op, order_op)[0]
 
     return render_template(
-        "base/index-modal.html",
+        "page/index-modal.html",
         pagination=reqs,
         reqs=reqs.items,
         title="My requests",
@@ -196,7 +196,7 @@ def archive():
     reqs = fetch_db(filter_op, order_op)[0]
 
     return render_template(
-        "base/index-modal.html",
+        "page/index-modal.html",
         pagination=reqs,
         reqs=reqs.items,
         title="Archived requests",
@@ -219,7 +219,7 @@ def rejected():
         reqs = MockSQLResult()
 
     return render_template(
-        "base/index-modal.html",
+        "page/index-modal.html",
         pagination=reqs,
         reqs=reqs.items,
         title="Rejected requests",
@@ -237,7 +237,7 @@ def accepted():
     reqs, total, _ = fetch_db(filter_op, order_op)
 
     return render_template(
-        "base/index.html",
+        "page/index.html",
         pagination=reqs,
         reqs=reqs.items,
         title="Accepted requests",
@@ -260,7 +260,7 @@ def nominations():
     reqs = fetch_db(filter_op, order_op)[0]
 
     return render_template(
-        "base/index-table.html",
+        "page/index-table.html",
         pagination=reqs,
         reqs=reqs.items,
         title="Nominations",

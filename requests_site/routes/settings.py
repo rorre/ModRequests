@@ -47,4 +47,4 @@ def index():
             send_hook_queue(current_user)
     else:
         form.process()
-    return render_template("base/settings.html", form=form)
+    return render_template("page/settings.html", form=form)
