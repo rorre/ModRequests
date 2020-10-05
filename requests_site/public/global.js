@@ -36,13 +36,6 @@ function createToast(message, onClick) {
     })
 }
 
-$('.ui.search').search({
-    apiSettings: {
-        url: '/request/search/{query}'
-    },
-    minCharacters: 3
-})
-
 $('.ui.dropdown').dropdown()
 $('#selector').change(function () {
     $("#nominator_select").submit()

@@ -142,22 +142,6 @@ def delete(set_id):
     return redirect(url_for("base.index"))
 
 
-@blueprint.route("/search/<query>")
-def search(query):
-    json = {"results": []}
-    requests = Request.query.filter(Request.song.like(f"%{query}%")).all()
-    for req in requests:
-        new = {}
-        new["title"] = req.song
-        new["description"] = (
-            f"Mapped by {req.mapper} | "
-            + f"{req.status.name} | "
-            + f"Requested to {req.target_bn.username}"
-        )
-        json["results"].append(new)
-    return jsonify(json)
-
-
 def fetch_db(filter_op, order_op):
     page = request.args.get("page", 1, type=int)
     reqs = Request.query.filter(filter_op).order_by(order_op)
