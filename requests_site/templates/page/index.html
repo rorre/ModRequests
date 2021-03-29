@@ -1,12 +1,16 @@
+{# This page is used for listing with cards. #}
+
 {% extends "layout.html" %}
 {% import 'macros.html' as macros %}
 
 {% block content %}
     <h2 class="ui header">
         {{ title }}
+
         {% if count %}
         <div class="ui circular label">{{ count }}</div>
         {% endif %}
+
         {% if subtitle %}
         <div class="sub header">{{ subtitle }}</div>
         {% endif %}
@@ -15,6 +19,7 @@
     <div class="ui divider"></div>
     <div class="ui hidden negative message" id="err"></div>
 
+    {# Render nominator select for all BNs that is available in the site. #}
     {% if bns %}
         {{ macros.render_nominator_select(bns, selected) }}
     {% endif %}
@@ -31,6 +36,7 @@
         {% endif %}
     {% endfor %}
     
+    {# Render requests #}
     {% if reqs %}
         <div class="ui centered doubling cards">
             {% for db in reqs %}

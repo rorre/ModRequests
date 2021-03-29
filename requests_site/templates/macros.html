@@ -3,6 +3,7 @@
     <div class="image">
         <img src="https://assets.ppy.sh/beatmaps/{{ db.mapset_id }}/covers/cover.jpg">
     </div>
+    
     <div class="content">
         <a href="https://osu.ppy.sh/s/{{ db.mapset_id }}" class="header">{{ db.song }}</a>
         <div class="meta">
@@ -66,6 +67,7 @@
 <div class="field">
     {{ field.label }}
     {{ field(placeholder=field.label.text, readonly=disabled, class=class) }}
+
     {% if field.errors %}
     <div class="ui negative message">
         <div class="header">
@@ -78,6 +80,7 @@
         </ul>
     </div>
     {% endif %}
+
 </div>
 {% endmacro %}
 
@@ -87,6 +90,7 @@
     <div class="ui checkbox">
         {{ field(placeholder=field.label.text) }}
         {{ field.label }}
+
         {% if field.errors %}
         <div class="ui negative message">
             <div class="header">
@@ -100,6 +104,7 @@
             </p>
         </div>
         {% endif %}
+
     </div>
 </div>
 {% endmacro %}
@@ -119,16 +124,22 @@
 
 {% macro create_modal(db) %}
 <div class="ui modal" id="db-{{ db.id }}">
+    {# Header #}
     <i class="close icon"></i>
     <div class="header">
         <a href="https://osu.ppy.sh/s/{{ db.mapset_id }}">{{ db.song }}</a>
     </div>
+
+    {# Content #}
     <div class="content">
+        {# Banner image #}
         <div class="ui segment">
             <div class="ui fluid image">
                 <img src="https://assets.ppy.sh/beatmaps/{{ db.mapset_id }}/covers/cover.jpg">
             </div>
         </div>
+
+        {# Status #}
         <div class="ui segment">
             <div class="ui icon header center aligned">
                 {% if db.status_ == 1 %}
@@ -143,6 +154,8 @@
                 Current request status is "{{ db.status.name | replace("_", " ") }}".
             </div>
         </div>
+
+        {# Details #}
         <div class="ui segment">
             <div class="ui two columns stackable grid">
                 <div class="column">
@@ -159,6 +172,7 @@
                     {{ render_item("Target BN", "None") }}
                     {% endif %}
                 </div>
+
                 <div class="column">
                     <div class="item">
                         <a class="header">Note</a>
@@ -175,6 +189,7 @@
                     </div>
                     {% endif %}
                 </div>
+
             </div>
         </div>
     </div>

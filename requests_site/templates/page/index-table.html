@@ -1,17 +1,21 @@
+{# This page is used for listing with tables. #}
+
 {% extends "layout.html" %}
 {% import 'macros.html' as macros %}
 
 {% block content %}
     <h2 class="ui header">
         {{ title }}
+
         {% if subtitle %}
         <div class="sub header">{{ subtitle }}</div>
         {% endif %}
     </h2>
     <div class="ui divider"></div>
 
+    {# Render nominator select for all BNs that is available in the site. #}
     {% if bns %}
-    {{ macros.render_nominator_select(bns, selected) }}
+        {{ macros.render_nominator_select(bns, selected) }}
     {% endif %}
 
     {% if reqs %}
@@ -44,6 +48,8 @@
                     {% endif %}
 
                     <td>{{ db.status.name | replace("_", " ") }}
+
+                    {# Render mark button if the user is the map's BN. #}
                     {% if db.status_ == 4 and current_user.is_bn and db.target_bn_id == current_user.osu_uid %}
                         <div class="ui green button nominatedbtn" data-set-id="{{ db.id }}">Mark as Nominated</div>
                     {% endif %}
