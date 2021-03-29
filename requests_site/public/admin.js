@@ -4,10 +4,13 @@ $(".acceptreq").click(function (e) {
 
     const set_id = $this.data("set-id")
     axios.post("/request/" + set_id, { "status_": 2 }).then((e) => {
-        var $parent = $($this.parents()[2])
-        $parent.hide()
-        var $a_status = $parent.siblings(".extra.content").contents("a")
-        $a_status.contents().first().replaceWith("Accepted")
+        // Hide Reject/Accept buttons
+        var $optionButtons = $($this.parents()[2])
+        $optionButtons.hide()
+
+        // Update request status on UI
+        var $card = $($this.parents()[3])
+        $card.find(".reqStatus").html("Accepted")
     }).catch(handle_error)
 })
 
@@ -16,15 +19,19 @@ $(".declinereq").click(function (e) {
     $this = $(this)
     const set_id = $this.data("set-id")
 
+    // Append reasoning textbox
     const appended = `<div class="ui form"><div class="field"><label>Reason</label><textarea id="reason-${set_id}"></textarea></div><button class="ui button" type="submit" id="rejbtn-${set_id}">Submit</button></div>`;
     $($this.parents()[1]).append(appended)
     $("#rejbtn-" + set_id).click((e) => {
         e.preventDefault()
         axios.post("/request/" + set_id, { "status_": 1, "archive": true, "reason": $(`#reason-${set_id}`).val() }).then((e) => {
-            var $parent = $($this.parents()[2])
-            $parent.hide()
-            var $a_status = $parent.siblings(".extra.content").contents("a")
-            $a_status.contents().first().replaceWith("Declined")
+            // Hide Reject/Accept buttons
+            var $optionButtons = $($this.parents()[2])
+            $optionButtons.hide()
+
+            // Update request status on UI
+            var $card = $($this.parents()[3])
+            $card.find(".reqStatus").html("Declined")
         }).catch(handle_error)
     })
 })

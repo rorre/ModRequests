@@ -3,7 +3,7 @@
     <div class="image">
         <img src="https://assets.ppy.sh/beatmaps/{{ db.mapset_id }}/covers/cover.jpg">
     </div>
-    
+
     <div class="content">
         <a href="https://osu.ppy.sh/s/{{ db.mapset_id }}" class="header">{{ db.song }}</a>
         <div class="meta">
@@ -21,7 +21,7 @@
     <div class="extra content">
         <a>
             <i class="info circle icon"></i>
-            {{ db.status.name }}
+            <span class="reqStatus">{{ db.status.name }}</span>
         </a>
         {% if user.is_bn and db.target_bn_id == user.osu_uid and db.status.value == 2 %}
         <div class="ui checkbox right floated">
@@ -201,7 +201,7 @@
     <span>Nominator:</span>
     <select class="ui dropdown" name="nominator" id="selector">
         {% for bn in bns %}
-        <option value="{{bn.osu_uid}}" {% if selected|int() == bn.osu_uid %} selected {% endif %}>
+        <option value="{{bn.osu_uid}}" {% if selected|int()==bn.osu_uid %} selected {% endif %}>
             {{bn.username}}
         </option>
         {% endfor %}
