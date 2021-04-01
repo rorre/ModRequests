@@ -28,6 +28,91 @@
     {{ macros.render_field(form.mapset_id, disabled=True) }}
     {{ macros.render_field(form.mapper, disabled=True) }}
     {{ macros.render_field(form.note) }}
-    {{ form.submit(class_="ui button") }}
+    {# {{ form.submit(class_="ui button") }} #}
+    <input class="ui button" id="submit" type="submit" name="submit" required="" value="Submit"
+        onclick="event.preventDefault();runSurvey();">
 </form>
+
+<div class="ui modal" id="surveyModal">
+    <i class="close icon"></i>
+    <div class="header">
+        Survey
+    </div>
+
+
+    <div class="content">
+        <div class="ui segment">
+            <div class="ui icon header center aligned">
+                <i class="ellipsis horizontal icon"></i>
+                Please complete a survey to send a mod request.
+            </div>
+        </div>
+
+        <div class="ui segment" id="surveyList">
+            {% for s in surveys[:3] %}
+            <button class="fluid ui button surveyButton">{{ s }}</button>
+            <div class="ui divider"></div>
+            {% endfor %}
+            <button class="fluid ui button surveyButton">{{ surveys[3] }}</a>
+        </div>
+    </div>
+</div>
+
+<script>
+    function runSurvey() {
+        $("#surveyModal").modal("show")
+    }
+
+    function sleep(ms) {
+        return new Promise(resolve => setTimeout(resolve, ms));
+    }
+
+    async function waitForStatus($survey) {
+        var attempts = 0;
+        while (attempts < 60) {
+            try {
+                const response = await axios.get("/surveyStatus")
+                if (response.data.status) { break; }
+            } catch (error) {
+                console.error(error)
+            }
+            await sleep(1000)
+            attempts += 1
+        }
+
+        if (attempts >= 60) {
+            $survey.html(`<div class="ui icon header center aligned">
+                <i class="times icon"></i>
+                Failed, please refresh and try again.
+            </div>`)
+        } else {
+            $survey.html(`<div class="ui icon header center aligned">
+                <i class="check icon"></i>
+                Happy April Fools!
+            </div>`)
+        }
+    }
+
+    function randomString(len) {
+        charSet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+        var randomString = '';
+        for (var i = 0; i < len; i++) {
+            var randomPoz = Math.floor(Math.random() * charSet.length);
+            randomString += charSet.substring(randomPoz, randomPoz + 1);
+        }
+        return randomString;
+    }
+
+    $(".surveyButton").click(function () {
+        var $survey = $("#surveyList")
+        const surveyOrig = $survey.html()
+        window.open("/survey?id=" + randomString(32))
+
+        $survey.html(`<div class="ui icon header center aligned">
+            <i class="ellipsis horizontal icon"></i>
+            Waiting for survey to finish...
+        </div>`)
+        waitForStatus($survey);
+    })
+</script>
 {% endblock %}

@@ -25,9 +25,9 @@ def index():
     return render_template("login.html")
 
 
-@blueprint.route("/map/<mode>/<mapid>")
+@blueprint.route("/map/<int:mode>/<int:mapid>")
 @login_required
-def get_map(mode, mapid):
+def get_map(mode: int, mapid: int):
     osu_token = current_app.config["OSU_TOKEN"]
     try:
         res = requests.get(
@@ -52,8 +52,8 @@ def get_map(mode, mapid):
         return make_response(jsonify(err="Can't ask osu! API."), 400)
 
 
-@blueprint.route("/rules/<uid>")
-def get_rules(uid):
+@blueprint.route("/rules/<int:uid>")
+def get_rules(uid: int):
     user = User.query.filter_by(osu_uid=uid).first()
     if not user:
         return make_response(jsonify(err="No user with that user id."), 400)
@@ -71,3 +71,20 @@ def set_nominator():
     session["nominator"] = request.args.get("nominator")
     redirect_url = request.referrer or url_for("request.listing")
     return redirect(redirect_url)
+
+
+@blueprint.route("/survey")
+def survey():
+    session["survey_done"] = False
+    return render_template("page/survey.html")
+
+
+@blueprint.route("/surveyFinal")
+def survey_done():
+    session["survey_done"] = True
+    return redirect("https://www.youtube.com/watch?v=dQw4w9WgXcQ")
+
+
+@blueprint.route("/surveyStatus")
+def survey_status():
+    return {"status": session.get("survey_done", False)}

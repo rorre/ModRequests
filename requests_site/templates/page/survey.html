@@ -1,0 +1,17 @@
+{% extends "layout.html" %}
+{% import 'macros.html' as macros %}
+
+{% block content %}
+<h2 class="ui header">
+    Survey
+</h2>
+
+<div class="ui divider"></div>
+<p>Please take wait a moment... If it takes too long and you still hasn't been redirected to our
+    survey site after 5 seconds, please <a href="/surveyFinal">click here</a>.
+</p>
+
+<script>
+    setTimeout(function () { window.location.pathname = "/surveyFinal" }, 3000);
+</script>
+{% endblock %}

@@ -1,3 +1,5 @@
+import random
+
 from datetime import datetime
 from typing import Any, Dict
 
@@ -61,6 +63,7 @@ def create():
         form.target_bn.choices.append([str(u.osu_uid), u.username + extra])
 
     if form.validate_on_submit():
+        return "lol nice try"
         if not form.target_bn.data:
             flash("Invalid nominator.")
             return render_template("page/req.html", form=form, scripts=["request.js"])
@@ -115,7 +118,23 @@ def create():
         send_hook("add_request", request)
         flash("Done adding request.")
         return redirect(url_for("request.listing", nominator=target_bn.osu_uid))
-    return render_template("page/req.html", form=form, scripts=["request.js"])
+    surveys = [
+        "Win an iPhone 12 Pro!",
+        "Win a Samsung Galaxy S20 Ultra!",
+        "Do you like Nicki Minaj? Test your knowledge!",
+        "Win 999 USD by completing this survey!",
+        "Get one free BN ticket for everyone in the BNG!",
+        "Ever wanted to know how it's like to be a BN?",
+        "Rate our store and win Office 365 license!",
+        "Want to win a year worth of osu!supporter?",
+        "Get a chance to win osu!jet!",
+        "Do you want to know Cookiezi's deepest secret? Click here!",
+        "Are you a hyperpop fan? Find out more about the genre!",
+    ]
+    picked = random.sample(surveys, 4)
+    return render_template(
+        "page/req.html", form=form, scripts=["request.js"], surveys=picked
+    )
 
 
 @blueprint.route("/<int:set_id>", methods=["POST"])
