@@ -1,4 +1,5 @@
 from datetime import datetime
+from typing import Any, Dict
 
 from flask import (
     Blueprint,
@@ -53,6 +54,8 @@ class NewRequestForm(FlaskForm):
 def create():
     form = NewRequestForm()
     form.target_bn.choices = [("", "Nominator")]
+
+    u: User
     for u in User.query.filter_by(is_bn=True):
         extra = " (CLOSED)" if u.is_closed else ""
         form.target_bn.choices.append([str(u.osu_uid), u.username + extra])
@@ -63,11 +66,13 @@ def create():
             return render_template("page/req.html", form=form, scripts=["request.js"])
 
         form.target_bn.data = int(form.target_bn.data)
-        target_bn = User.query.filter_by(osu_uid=form.target_bn.data).first()
+        target_bn: User = User.query.filter_by(osu_uid=form.target_bn.data).first()
         if target_bn.is_closed:
             flash(f"{target_bn.username} is currently closed.")
             return render_template("page/req.html", form=form, scripts=["request.js"])
 
+        # Look if the target BN allows multiple requests or not.
+        # If not, then check if there is an existing request by the user.
         if not target_bn.allow_multiple_reqs:
             existing_request = Request.query.filter(
                 and_(
@@ -82,6 +87,8 @@ def create():
                     "page/req.html", form=form, scripts=["request.js"]
                 )
 
+        # Disallow duplicate map as it will cause spam.
+        # Only checking the one that is pending though.
         existing_map = Request.query.filter(
             and_(
                 Request.mapset_id == form.mapset_id.data,
@@ -113,12 +120,13 @@ def create():
 
 @blueprint.route("/<int:set_id>", methods=["POST"])
 @bn_only
-def update(set_id):
-    mapset = Request.query.filter_by(id=set_id).first_or_404()
+def update(set_id: int):
+    mapset: Request = Request.query.filter_by(id=set_id).first_or_404()
     if mapset.target_bn_id != current_user.osu_uid:
         return make_response(jsonify(err="You can't control other BN's request."), 400)
+
     try:
-        data = request.json
+        data: Dict[str, Any] = request.json
         for key in data:
             setattr(mapset, key, data[key])
         mapset.last_updated = datetime.utcnow()
@@ -132,8 +140,8 @@ def update(set_id):
 
 @blueprint.route("/<int:set_id>/delete")
 @login_required
-def delete(set_id):
-    mapset = Request.query.filter_by(id=set_id).first_or_404()
+def delete(set_id: int):
+    mapset: Request = Request.query.filter_by(id=set_id).first_or_404()
     if mapset.requester_id != current_user.osu_uid:
         return abort(403)
     send_hook("delete_request", mapset)
