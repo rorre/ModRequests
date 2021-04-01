@@ -25,7 +25,7 @@ def index():
     return render_template("login.html")
 
 
-@blueprint.route("/map/<int:mode>/<int:mapid>")
+@blueprint.route("/map/<mode>/<int:mapid>")
 @login_required
 def get_map(mode: int, mapid: int):
     osu_token = current_app.config["OSU_TOKEN"]
