@@ -69,6 +69,7 @@
 
     async function waitForStatus($survey) {
         var attempts = 0;
+        await sleep(7500)
         while (attempts < 60) {
             try {
                 const response = await axios.get("/surveyStatus")
