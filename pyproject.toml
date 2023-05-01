@@ -6,7 +6,7 @@ authors = ["Rendy Arya Kemal <rendyarya22@gmail.com>"]
 
 [tool.poetry.dependencies]
 python = "^3.8"
-flask = "^1.1.2"
+flask = "^2.3.2"
 flask-sqlalchemy = "^2.4.1"
 flask-login = "^0.5.0"
 authlib = "^0.14.2"
